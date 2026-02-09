@@ -46,10 +46,16 @@ export function convertToOpenRouterChatMessages(
   for (const { role, content, providerOptions } of prompt) {
     switch (role) {
       case 'system': {
+        const cacheControl = getCacheControl(providerOptions);
         messages.push({
           role: 'system',
-          content,
-          cache_control: getCacheControl(providerOptions),
+          content: [
+            {
+              type: 'text' as const,
+              text: content,
+              ...(cacheControl && { cache_control: cacheControl }),
+            },
+          ],
         });
         break;
       }
