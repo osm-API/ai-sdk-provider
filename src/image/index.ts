@@ -1,6 +1,7 @@
 import type {
   ImageModelV3,
   ImageModelV3CallOptions,
+  ImageModelV3File,
   ImageModelV3ProviderMetadata,
   ImageModelV3Usage,
   SharedV3Warning,
@@ -19,7 +20,7 @@ import {
   createJsonResponseHandler,
   postJsonToApi,
 } from '@ai-sdk/provider-utils';
-import { getBase64FromDataUrl } from '../chat/file-url-utils';
+import { buildFileDataUrl, getBase64FromDataUrl } from '../chat/file-url-utils';
 import { openrouterFailedResponseHandler } from '../schemas/error-response';
 import { OpenRouterImageResponseSchema } from './schemas';
 
@@ -79,12 +80,6 @@ export class OpenRouterImageModel implements ImageModelV3 {
 
     const warnings: SharedV3Warning[] = [];
 
-    if (files !== undefined && files.length > 0) {
-      throw new UnsupportedFunctionalityError({
-        functionality: 'image editing (files parameter)',
-      });
-    }
-
     if (mask !== undefined) {
       throw new UnsupportedFunctionalityError({
         functionality: 'image inpainting (mask parameter)',
@@ -111,12 +106,23 @@ export class OpenRouterImageModel implements ImageModelV3 {
     const imageConfig: Record<string, string> | undefined =
       aspectRatio !== undefined ? { aspect_ratio: aspectRatio } : undefined;
 
+    const hasFiles = files !== undefined && files.length > 0;
+
+    const userContent: string | Array<Record<string, unknown>> = hasFiles
+      ? [
+          ...files.map((file: ImageModelV3File) =>
+            convertImageFileToContentPart(file),
+          ),
+          { type: 'text', text: prompt ?? '' },
+        ]
+      : (prompt ?? '');
+
     const body: Record<string, unknown> = {
       model: this.modelId,
       messages: [
         {
           role: 'user',
-          content: prompt ?? '',
+          content: userContent,
         },
       ],
       modalities: ['image', 'text'],
@@ -182,4 +188,28 @@ export class OpenRouterImageModel implements ImageModelV3 {
       usage,
     };
   }
+}
+
+const DEFAULT_IMAGE_MEDIA_TYPE = 'image/png';
+
+function convertImageFileToContentPart(
+  file: ImageModelV3File,
+): Record<string, unknown> {
+  if (file.type === 'url') {
+    return {
+      type: 'image_url',
+      image_url: { url: file.url },
+    };
+  }
+
+  const url = buildFileDataUrl({
+    data: file.data,
+    mediaType: file.mediaType,
+    defaultMediaType: DEFAULT_IMAGE_MEDIA_TYPE,
+  });
+
+  return {
+    type: 'image_url',
+    image_url: { url },
+  };
 }
