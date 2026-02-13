@@ -111,7 +111,7 @@ pnpm test:issues
 ```typescript
 /**
  * Regression test for GitHub issue #{number}
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/{number}
+ * https://github.com/osm-API/ai-sdk-provider/issues/{number}
  *
  * Reported error: {exact error message from the issue}
  * Model: {model ID if applicable}

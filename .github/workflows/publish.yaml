@@ -104,4 +104,4 @@ jobs:
           done
           echo ""
           echo "Package availability:"
-          npm view @openrouter/ai-sdk-provider@latest version 2>&1 || echo "  (could not fetch)"
+          npm view @osm/ai-sdk-provider@latest version 2>&1 || echo "  (could not fetch)"
