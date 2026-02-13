@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #341
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/341
+ * https://github.com/osm-API/ai-sdk-provider/issues/341
  *
  * Reported error: Cache control bug exceeding Anthropic's 4-segment limit
  *

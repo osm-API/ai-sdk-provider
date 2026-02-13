@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #287
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/287
+ * https://github.com/osm-API/ai-sdk-provider/issues/287
  *
  * Reported error: AI_TypeValidationError when tool calls have missing arguments field
  *

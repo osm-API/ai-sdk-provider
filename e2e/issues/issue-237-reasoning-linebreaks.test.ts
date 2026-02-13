@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #237
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/237
+ * https://github.com/osm-API/ai-sdk-provider/issues/237
  *
  * Issue: When streaming reasoning content with openai/gpt-5.1, section titles
  * (like `**Exploring mathematical concepts**`) don't have line breaks before them.

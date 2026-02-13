@@ -1,11 +1,11 @@
 /**
  * Regression test for GitHub issue #386
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/386
+ * https://github.com/osm-API/ai-sdk-provider/issues/386
  *
  * Issue: "Support for `files` parameter in image generation"
  *
  * User report:
- * - OpenRouterImageModel.doGenerate() throws UnsupportedFunctionalityError
+ * - OsmImageModel.doGenerate() throws UnsupportedFunctionalityError
  *   when the `files` parameter is provided
  * - This prevents image editing and image-to-image generation use cases
  *   that are supported by the AI SDK's `generateImage` function through

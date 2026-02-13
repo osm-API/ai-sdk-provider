@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #248
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/248
+ * https://github.com/osm-API/ai-sdk-provider/issues/248
  *
  * Issue: "google/gemini-3-pro-preview: search capability returns empty responses"
  *
@@ -34,7 +34,7 @@ describe('Issue #248: Gemini 3 Pro Preview web search empty responses', () => {
 
     it('should return non-empty response with generateText using exact issue code pattern', async () => {
       // Exact code pattern from issue #248:
-      // https://github.com/OpenRouterTeam/ai-sdk-provider/issues/248
+      // https://github.com/osm-API/ai-sdk-provider/issues/248
       const response = await generateText({
         model,
         providerOptions: {
