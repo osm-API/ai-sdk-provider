@@ -92,14 +92,14 @@ Remember to be helpful and concise in your responses.`;
 
     const response = await makeRequest();
 
-    const openrouterMetadata = response.providerMetadata?.osm as {
+    const osmMetadata = response.providerMetadata?.osm as {
       usage?: {
         promptTokensDetails?: { cachedTokens?: number };
       };
     };
 
     const cachedTokens =
-      openrouterMetadata?.usage?.promptTokensDetails?.cachedTokens;
+      osmMetadata?.usage?.promptTokensDetails?.cachedTokens;
 
     expect(cachedTokens).toBeDefined();
     expect(cachedTokens).toBeGreaterThan(0);
