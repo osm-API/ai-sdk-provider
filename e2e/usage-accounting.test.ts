@@ -1,14 +1,14 @@
 import { streamText } from 'ai';
 import { it, vi } from 'vitest';
-import { createOpenRouter } from '@/src';
+import { createOsm } from '@/src';
 
 vi.setConfig({
   testTimeout: 60_000,
 });
 
 it('receive usage accounting', async () => {
-  const openrouter = createOpenRouter({
-    apiKey: process.env.OPENROUTER_API_KEY,
+  const openrouter = createOsm({
+    apiKey: process.env.OSM_API_KEY,
     baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
   });
   const model = openrouter('anthropic/claude-3.7-sonnet:thinking', {

@@ -10,11 +10,11 @@
  * Observed behavior: Tool results with multimodal content (images) are JSON.stringified.
  */
 import { describe, expect, it } from 'vitest';
-import { convertToOpenRouterChatMessages } from '@/src/chat/convert-to-openrouter-chat-messages';
+import { convertToOsmChatMessages } from '@/src/chat/convert-to-osm-chat-messages';
 
 describe('Issue #181: Tool response for image not working', () => {
   it('should stringify tool result with content type containing image', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'tool',
         content: [
@@ -56,7 +56,7 @@ describe('Issue #181: Tool response for image not working', () => {
   });
 
   it('should stringify tool result with content type containing image URL', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'tool',
         content: [
@@ -91,7 +91,7 @@ describe('Issue #181: Tool response for image not working', () => {
   });
 
   it('should handle text-only tool results normally', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'tool',
         content: [
@@ -117,7 +117,7 @@ describe('Issue #181: Tool response for image not working', () => {
   });
 
   it('should handle JSON tool results normally', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'tool',
         content: [
@@ -148,7 +148,7 @@ describe('Issue #181: Tool response for image not working', () => {
 
   it('should stringify tool result with file-data type (reproduces issue #181)', () => {
     // Reproduces issue #181 using AI SDK v3 format (file-data instead of V2's media type)
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'tool',
         content: [

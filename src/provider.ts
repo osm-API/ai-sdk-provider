@@ -1,95 +1,92 @@
 import type { ProviderV3 } from '@ai-sdk/provider';
 import type {
-  OpenRouterChatModelId,
-  OpenRouterChatSettings,
-} from './types/openrouter-chat-settings';
+  OsmChatModelId,
+  OsmChatSettings,
+} from './types/osm-chat-settings';
 import type {
-  OpenRouterCompletionModelId,
-  OpenRouterCompletionSettings,
-} from './types/openrouter-completion-settings';
+  OsmCompletionModelId,
+  OsmCompletionSettings,
+} from './types/osm-completion-settings';
 import type {
-  OpenRouterEmbeddingModelId,
-  OpenRouterEmbeddingSettings,
-} from './types/openrouter-embedding-settings';
+  OsmEmbeddingModelId,
+  OsmEmbeddingSettings,
+} from './types/osm-embedding-settings';
 import type {
-  OpenRouterImageModelId,
-  OpenRouterImageSettings,
-} from './types/openrouter-image-settings';
+  OsmImageModelId,
+  OsmImageSettings,
+} from './types/osm-image-settings';
 
 import { loadApiKey, withoutTrailingSlash } from '@ai-sdk/provider-utils';
-import { OpenRouterChatLanguageModel } from './chat';
-import { OpenRouterCompletionLanguageModel } from './completion';
-import { OpenRouterEmbeddingModel } from './embedding';
-import { OpenRouterImageModel } from './image';
+import { OsmChatLanguageModel } from './chat';
+import { OsmCompletionLanguageModel } from './completion';
+import { OsmEmbeddingModel } from './embedding';
+import { OsmImageModel } from './image';
 import { withUserAgentSuffix } from './utils/with-user-agent-suffix';
 import { VERSION } from './version';
 
-export type { OpenRouterChatSettings, OpenRouterCompletionSettings };
+export type { OsmChatSettings, OsmCompletionSettings };
 
-export interface OpenRouterProvider extends ProviderV3 {
+export interface OsmProvider extends ProviderV3 {
   (
-    modelId: OpenRouterChatModelId,
-    settings?: OpenRouterCompletionSettings,
-  ): OpenRouterCompletionLanguageModel;
-  (
-    modelId: OpenRouterChatModelId,
-    settings?: OpenRouterChatSettings,
-  ): OpenRouterChatLanguageModel;
+    modelId: OsmChatModelId,
+    settings?: OsmCompletionSettings,
+  ): OsmCompletionLanguageModel;
+  (modelId: OsmChatModelId, settings?: OsmChatSettings): OsmChatLanguageModel;
 
   languageModel(
-    modelId: OpenRouterChatModelId,
-    settings?: OpenRouterCompletionSettings,
-  ): OpenRouterCompletionLanguageModel;
+    modelId: OsmChatModelId,
+    settings?: OsmCompletionSettings,
+  ): OsmCompletionLanguageModel;
   languageModel(
-    modelId: OpenRouterChatModelId,
-    settings?: OpenRouterChatSettings,
-  ): OpenRouterChatLanguageModel;
+    modelId: OsmChatModelId,
+    settings?: OsmChatSettings,
+  ): OsmChatLanguageModel;
 
   /**
-Creates an OpenRouter chat model for text generation.
+Creates an OSM chat model for text generation.
    */
   chat(
-    modelId: OpenRouterChatModelId,
-    settings?: OpenRouterChatSettings,
-  ): OpenRouterChatLanguageModel;
+    modelId: OsmChatModelId,
+    settings?: OsmChatSettings,
+  ): OsmChatLanguageModel;
 
   /**
-Creates an OpenRouter completion model for text generation.
+Creates an OSM completion model for text generation.
    */
   completion(
-    modelId: OpenRouterCompletionModelId,
-    settings?: OpenRouterCompletionSettings,
-  ): OpenRouterCompletionLanguageModel;
+    modelId: OsmCompletionModelId,
+    settings?: OsmCompletionSettings,
+  ): OsmCompletionLanguageModel;
 
   /**
-Creates an OpenRouter text embedding model. (AI SDK v5)
+Creates an OSM text embedding model. (AI SDK v5)
    */
   textEmbeddingModel(
-    modelId: OpenRouterEmbeddingModelId,
-    settings?: OpenRouterEmbeddingSettings,
-  ): OpenRouterEmbeddingModel;
+    modelId: OsmEmbeddingModelId,
+    settings?: OsmEmbeddingSettings,
+  ): OsmEmbeddingModel;
 
   /**
-Creates an OpenRouter text embedding model. (AI SDK v4 - deprecated, use textEmbeddingModel instead)
+Creates an OSM text embedding model. (AI SDK v4 - deprecated, use textEmbeddingModel instead)
 @deprecated Use textEmbeddingModel instead
    */
   embedding(
-    modelId: OpenRouterEmbeddingModelId,
-    settings?: OpenRouterEmbeddingSettings,
-  ): OpenRouterEmbeddingModel;
+    modelId: OsmEmbeddingModelId,
+    settings?: OsmEmbeddingSettings,
+  ): OsmEmbeddingModel;
 
   /**
-Creates an OpenRouter image model for image generation.
+Creates an OSM image model for image generation.
    */
   imageModel(
-    modelId: OpenRouterImageModelId,
-    settings?: OpenRouterImageSettings,
-  ): OpenRouterImageModel;
+    modelId: OsmImageModelId,
+    settings?: OsmImageSettings,
+  ): OsmImageModel;
 }
 
-export interface OpenRouterProviderSettings {
+export interface OsmProviderSettings {
   /**
-Base URL for the OpenRouter API calls.
+Base URL for the OSM API calls.
      */
   baseURL?: string;
 
@@ -109,9 +106,7 @@ Custom headers to include in the requests.
   headers?: Record<string, string>;
 
   /**
-OpenRouter compatibility mode. Should be set to `strict` when using the OpenRouter API,
-and `compatible` when using 3rd party providers. In `compatible` mode, newer
-information such as streamOptions are not being sent. Defaults to 'compatible'.
+OSM compatibility mode. Defaults to 'compatible'.
    */
   compatibility?: 'strict' | 'compatible';
 
@@ -122,28 +117,19 @@ or to provide a custom fetch implementation for e.g. testing.
   fetch?: typeof fetch;
 
   /**
-A JSON object to send as the request body to access OpenRouter features & upstream provider features.
+A JSON object to send as the request body to access OSM features.
   */
   extraBody?: Record<string, unknown>;
-
-  /**
-   * Record of provider slugs to API keys for injecting into provider routing.
-   * Maps provider slugs (e.g. "anthropic", "openai") to their respective API keys.
-   */
-  api_keys?: Record<string, string>;
 }
 
 /**
-Create an OpenRouter provider instance.
+Create an OSM provider instance.
  */
-export function createOpenRouter(
-  options: OpenRouterProviderSettings = {},
-): OpenRouterProvider {
+export function createOsm(options: OsmProviderSettings = {}): OsmProvider {
   const baseURL =
     withoutTrailingSlash(options.baseURL ?? options.baseUrl) ??
-    'https://openrouter.ai/api/v1';
+    'https://api.osmapi.com/v1';
 
-  // we default to compatible, because strict breaks providers like Groq:
   const compatibility = options.compatibility ?? 'compatible';
 
   const getHeaders = () =>
@@ -151,24 +137,20 @@ export function createOpenRouter(
       {
         Authorization: `Bearer ${loadApiKey({
           apiKey: options.apiKey,
-          environmentVariableName: 'OPENROUTER_API_KEY',
-          description: 'OpenRouter',
+          environmentVariableName: 'OSM_API_KEY',
+          description: 'OSM',
         })}`,
         ...options.headers,
-        ...(options.api_keys &&
-          Object.keys(options.api_keys).length > 0 && {
-            'X-Provider-API-Keys': JSON.stringify(options.api_keys),
-          }),
       },
-      `ai-sdk/openrouter/${VERSION}`,
+      `ai-sdk/osm/${VERSION}`,
     );
 
   const createChatModel = (
-    modelId: OpenRouterChatModelId,
-    settings: OpenRouterChatSettings = {},
+    modelId: OsmChatModelId,
+    settings: OsmChatSettings = {},
   ) =>
-    new OpenRouterChatLanguageModel(modelId, settings, {
-      provider: 'openrouter.chat',
+    new OsmChatLanguageModel(modelId, settings, {
+      provider: 'osm.chat',
       url: ({ path }) => `${baseURL}${path}`,
       headers: getHeaders,
       compatibility,
@@ -177,11 +159,11 @@ export function createOpenRouter(
     });
 
   const createCompletionModel = (
-    modelId: OpenRouterCompletionModelId,
-    settings: OpenRouterCompletionSettings = {},
+    modelId: OsmCompletionModelId,
+    settings: OsmCompletionSettings = {},
   ) =>
-    new OpenRouterCompletionLanguageModel(modelId, settings, {
-      provider: 'openrouter.completion',
+    new OsmCompletionLanguageModel(modelId, settings, {
+      provider: 'osm.completion',
       url: ({ path }) => `${baseURL}${path}`,
       headers: getHeaders,
       compatibility,
@@ -190,11 +172,11 @@ export function createOpenRouter(
     });
 
   const createEmbeddingModel = (
-    modelId: OpenRouterEmbeddingModelId,
-    settings: OpenRouterEmbeddingSettings = {},
+    modelId: OsmEmbeddingModelId,
+    settings: OsmEmbeddingSettings = {},
   ) =>
-    new OpenRouterEmbeddingModel(modelId, settings, {
-      provider: 'openrouter.embedding',
+    new OsmEmbeddingModel(modelId, settings, {
+      provider: 'osm.embedding',
       url: ({ path }) => `${baseURL}${path}`,
       headers: getHeaders,
       fetch: options.fetch,
@@ -202,11 +184,11 @@ export function createOpenRouter(
     });
 
   const createImageModel = (
-    modelId: OpenRouterImageModelId,
-    settings: OpenRouterImageSettings = {},
+    modelId: OsmImageModelId,
+    settings: OsmImageSettings = {},
   ) =>
-    new OpenRouterImageModel(modelId, settings, {
-      provider: 'openrouter.image',
+    new OsmImageModel(modelId, settings, {
+      provider: 'osm.image',
       url: ({ path }) => `${baseURL}${path}`,
       headers: getHeaders,
       fetch: options.fetch,
@@ -214,28 +196,21 @@ export function createOpenRouter(
     });
 
   const createLanguageModel = (
-    modelId: OpenRouterChatModelId | OpenRouterCompletionModelId,
-    settings?: OpenRouterChatSettings | OpenRouterCompletionSettings,
+    modelId: OsmChatModelId | OsmCompletionModelId,
+    settings?: OsmChatSettings | OsmCompletionSettings,
   ) => {
     if (new.target) {
       throw new Error(
-        'The OpenRouter model function cannot be called with the new keyword.',
+        'The OSM model function cannot be called with the new keyword.',
       );
     }
 
-    if (modelId === 'openai/gpt-3.5-turbo-instruct') {
-      return createCompletionModel(
-        modelId,
-        settings as OpenRouterCompletionSettings,
-      );
-    }
-
-    return createChatModel(modelId, settings as OpenRouterChatSettings);
+    return createChatModel(modelId, settings as OsmChatSettings);
   };
 
   const provider = (
-    modelId: OpenRouterChatModelId | OpenRouterCompletionModelId,
-    settings?: OpenRouterChatSettings | OpenRouterCompletionSettings,
+    modelId: OsmChatModelId | OsmCompletionModelId,
+    settings?: OsmChatSettings | OsmCompletionSettings,
   ) => createLanguageModel(modelId, settings);
 
   provider.languageModel = createLanguageModel;
@@ -245,12 +220,12 @@ export function createOpenRouter(
   provider.embedding = createEmbeddingModel; // deprecated alias for v4 compatibility
   provider.imageModel = createImageModel;
 
-  return provider as OpenRouterProvider;
+  return provider as OsmProvider;
 }
 
 /**
-Default OpenRouter provider instance. It uses 'strict' compatibility mode.
+Default OSM provider instance.
  */
-export const openrouter = createOpenRouter({
-  compatibility: 'strict', // strict for OpenRouter API
+export const osm = createOsm({
+  compatibility: 'compatible',
 });

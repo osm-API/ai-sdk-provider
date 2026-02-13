@@ -3,15 +3,15 @@ import type { ModelMessage } from 'ai';
 import { generateText } from 'ai';
 import { writeFile } from 'fs/promises';
 import { test, vi } from 'vitest';
-import { createOpenRouter } from '@/src';
+import { createOsm } from '@/src';
 
 vi.setConfig({
   testTimeout: 42_000,
 });
 
 test('send pdf urls', async () => {
-  const openrouter = createOpenRouter({
-    apiKey: process.env.OPENROUTER_API_KEY,
+  const openrouter = createOsm({
+    apiKey: process.env.OSM_API_KEY,
     baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
   });
 

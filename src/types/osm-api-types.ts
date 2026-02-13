@@ -1,10 +1,10 @@
 /**
- * OpenRouter API types - locally defined to avoid external SDK dependency.
- * These types mirror the OpenRouter API specification.
+ * Osm API types - locally defined to avoid external SDK dependency.
+ * These types mirror the Osm API specification.
  */
 
 /**
- * Error structure returned by OpenRouter API.
+ * Error structure returned by Osm API.
  */
 export type ChatErrorError = {
   code: string | number | null;
@@ -31,14 +31,14 @@ export type IdModeration = 'moderation';
 /**
  * Plugin identifier for response healing.
  * Automatically validates and repairs malformed JSON responses.
- * @see https://openrouter.ai/docs/guides/features/plugins/response-healing
+ * @see https://osm.ai/docs/guides/features/plugins/response-healing
  */
 export type IdResponseHealing = 'response-healing';
 
 /**
  * Plugin identifier for auto-router model selection.
- * Configures allowed models when using the openrouter/auto model.
- * @see https://openrouter.ai/docs/guides/routing/routers/auto-router
+ * Configures allowed models when using the osm/auto model.
+ * @see https://osm.ai/docs/guides/routing/routers/auto-router
  */
 export type IdAutoRouter = 'auto-router';
 

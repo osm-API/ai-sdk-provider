@@ -1,26 +1,24 @@
 import { z } from 'zod/v4';
 
-const openrouterEmbeddingUsageSchema = z.object({
+const osmEmbeddingUsageSchema = z.object({
   prompt_tokens: z.number(),
   total_tokens: z.number(),
   cost: z.number().optional(),
 });
 
-const openrouterEmbeddingDataSchema = z.object({
+const osmEmbeddingDataSchema = z.object({
   object: z.literal('embedding'),
   embedding: z.array(z.number()),
   index: z.number().optional(),
 });
 
-export const OpenRouterEmbeddingResponseSchema = z.object({
+export const OsmEmbeddingResponseSchema = z.object({
   id: z.string().optional(),
   object: z.literal('list'),
-  data: z.array(openrouterEmbeddingDataSchema),
+  data: z.array(osmEmbeddingDataSchema),
   model: z.string(),
   provider: z.string().optional(),
-  usage: openrouterEmbeddingUsageSchema.optional(),
+  usage: osmEmbeddingUsageSchema.optional(),
 });
 
-export type OpenRouterEmbeddingResponse = z.infer<
-  typeof OpenRouterEmbeddingResponseSchema
->;
+export type OsmEmbeddingResponse = z.infer<typeof OsmEmbeddingResponseSchema>;

@@ -1,4 +1,4 @@
-import type { OpenRouterSharedSettings } from '..';
+import type { OsmSharedSettings } from '..';
 import type {
   DataCollection,
   Engine,
@@ -10,12 +10,11 @@ import type {
   PdfEngine,
   ProviderSort,
   Quantization,
-} from './openrouter-api-types';
+} from './osm-api-types';
 
-// https://openrouter.ai/api/v1/models
-export type OpenRouterChatModelId = string;
+export type OsmChatModelId = string;
 
-export type OpenRouterChatSettings = {
+export type OsmChatSettings = {
   /**
 Modify the likelihood of specified tokens appearing in the completion.
 
@@ -51,8 +50,8 @@ Whether to enable parallel function calling during tool use. Default to true.
   parallelToolCalls?: boolean;
 
   /**
-A unique identifier representing your end-user, which can help OpenRouter to
-monitor and detect abuse. Learn more.
+A unique identifier representing your end-user, which can help OSM to
+monitor and detect abuse.
 */
   user?: string;
 
@@ -84,18 +83,18 @@ monitor and detect abuse. Learn more.
          * It has no effect when used with streaming methods like `streamObject` or `streamText`.
          * The plugin activates when using `response_format` with `json_schema` or `json_object`.
          *
-         * @see https://openrouter.ai/docs/guides/features/plugins/response-healing
+         * @see https://osm.ai/docs/guides/features/plugins/response-healing
          */
         id: IdResponseHealing;
       }
     | {
         /**
-         * Auto-router plugin - configures allowed models when using `openrouter/auto`.
+         * Auto-router plugin - configures allowed models when using `osm/auto`.
          *
          * Use wildcard patterns to restrict which models the auto router can select from.
          * When no `allowed_models` are specified, the auto router uses all supported models.
          *
-         * @see https://openrouter.ai/docs/guides/routing/routers/auto-router
+         * @see https://osm.ai/docs/guides/routing/routers/auto-router
          */
         id: IdAutoRouter;
         allowed_models?: string[];
@@ -119,7 +118,7 @@ monitor and detect abuse. Learn more.
      * - "native": Use provider's built-in web search
      * - "exa": Use Exa's search API
      * - undefined: Native if supported, otherwise Exa
-     * @see https://openrouter.ai/docs/features/web-search
+     * @see https://osm.ai/docs/features/web-search
      */
     engine?: Engine;
   };
@@ -127,7 +126,7 @@ monitor and detect abuse. Learn more.
   /**
    * Debug options for troubleshooting API requests.
    * Only works with streaming requests.
-   * @see https://openrouter.ai/docs/api-reference/debugging
+   * @see https://osm.ai/docs/api-reference/debugging
    */
   debug?: {
     /**
@@ -190,4 +189,4 @@ monitor and detect abuse. Learn more.
      */
     zdr?: boolean;
   };
-} & OpenRouterSharedSettings;
+} & OsmSharedSettings;

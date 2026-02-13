@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
 
-export const OpenRouterImageResponseSchema = z
+export const OsmImageResponseSchema = z
   .object({
     id: z.string().optional(),
     object: z.string().optional(),
@@ -43,6 +43,4 @@ export const OpenRouterImageResponseSchema = z
   })
   .passthrough();
 
-export type OpenRouterImageResponse = z.infer<
-  typeof OpenRouterImageResponseSchema
->;
+export type OsmImageResponse = z.infer<typeof OsmImageResponseSchema>;

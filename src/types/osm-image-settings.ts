@@ -1,9 +1,8 @@
-import type { OpenRouterSharedSettings } from '..';
+import type { OsmSharedSettings } from '..';
 
-// https://openrouter.ai/api/v1/models
-export type OpenRouterImageModelId = string;
+export type OsmImageModelId = string;
 
-export type OpenRouterImageSettings = {
+export type OsmImageSettings = {
   /**
    * Provider routing preferences to control request routing behavior
    */
@@ -46,4 +45,4 @@ export type OpenRouterImageSettings = {
       request?: number | string;
     };
   };
-} & OpenRouterSharedSettings;
+} & OsmSharedSettings;

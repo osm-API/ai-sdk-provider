@@ -3,15 +3,15 @@ import type { ModelMessage } from 'ai';
 import { generateText } from 'ai';
 import { readFile } from 'fs/promises';
 import { expect, test, vi } from 'vitest';
-import { createOpenRouter } from '@/src';
+import { createOsm } from '@/src';
 
 vi.setConfig({
   testTimeout: 42_000,
 });
 
 test('sending pdf base64 blob', async () => {
-  const openrouter = createOpenRouter({
-    apiKey: process.env.OPENROUTER_API_KEY,
+  const openrouter = createOsm({
+    apiKey: process.env.OSM_API_KEY,
     baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
   });
 
@@ -66,8 +66,8 @@ test('sending pdf base64 blob', async () => {
 });
 
 test('sending large pdf base64 blob with FileParserPlugin', async () => {
-  const openrouter = createOpenRouter({
-    apiKey: process.env.OPENROUTER_API_KEY,
+  const openrouter = createOsm({
+    apiKey: process.env.OSM_API_KEY,
     baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
   });
 

@@ -2,10 +2,10 @@
 
 import { generateText, tool } from 'ai';
 import { z } from 'zod/v4';
-import { createOpenRouter } from '@/src';
+import { createOsm } from '@/src';
 
-const openrouter = createOpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY,
+const openrouter = createOsm({
+  apiKey: process.env.OSM_API_KEY,
   baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
 });
 

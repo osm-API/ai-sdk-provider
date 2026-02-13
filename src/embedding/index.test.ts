@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { createOpenRouter } from '../provider';
-import { OpenRouterEmbeddingModel } from './index';
+import { createOsm } from '../provider';
+import { OsmEmbeddingModel } from './index';
 
-describe('OpenRouterEmbeddingModel', () => {
+describe('OsmEmbeddingModel', () => {
   const mockFetch = async (
     _url: URL | RequestInfo,
     _init?: RequestInit,
@@ -36,32 +36,32 @@ describe('OpenRouterEmbeddingModel', () => {
 
   describe('provider methods', () => {
     it('should expose textEmbeddingModel method', () => {
-      const provider = createOpenRouter({ apiKey: 'test-key' });
+      const provider = createOsm({ apiKey: 'test-key' });
       expect(provider.textEmbeddingModel).toBeDefined();
       expect(typeof provider.textEmbeddingModel).toBe('function');
     });
 
     it('should expose embedding method (deprecated)', () => {
-      const provider = createOpenRouter({ apiKey: 'test-key' });
+      const provider = createOsm({ apiKey: 'test-key' });
       expect(provider.embedding).toBeDefined();
       expect(typeof provider.embedding).toBe('function');
     });
 
     it('should create an embedding model instance', () => {
-      const provider = createOpenRouter({ apiKey: 'test-key' });
+      const provider = createOsm({ apiKey: 'test-key' });
       const model = provider.textEmbeddingModel(
         'openai/text-embedding-3-small',
       );
-      expect(model).toBeInstanceOf(OpenRouterEmbeddingModel);
+      expect(model).toBeInstanceOf(OsmEmbeddingModel);
       expect(model.modelId).toBe('openai/text-embedding-3-small');
-      expect(model.provider).toBe('openrouter');
+      expect(model.provider).toBe('osm');
       expect(model.specificationVersion).toBe('v3');
     });
   });
 
   describe('doEmbed', () => {
     it('should embed a single value', async () => {
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mockFetch,
       });
@@ -77,8 +77,8 @@ describe('OpenRouterEmbeddingModel', () => {
       expect(result.embeddings[0]).toHaveLength(1536);
       expect(result.usage).toEqual({ tokens: 5 });
       expect(
-        (result.providerMetadata?.openrouter as { usage?: { cost?: number } })
-          ?.usage?.cost,
+        (result.providerMetadata?.osm as { usage?: { cost?: number } })?.usage
+          ?.cost,
       ).toBe(0.00001);
     });
 
@@ -122,7 +122,7 @@ describe('OpenRouterEmbeddingModel', () => {
         );
       };
 
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mockFetchMultiple,
       });
@@ -178,7 +178,7 @@ describe('OpenRouterEmbeddingModel', () => {
         );
       };
 
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mockFetchWithCapture,
       });
@@ -233,7 +233,7 @@ describe('OpenRouterEmbeddingModel', () => {
         );
       };
 
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mockFetchNoUsage,
       });
@@ -248,7 +248,7 @@ describe('OpenRouterEmbeddingModel', () => {
       expect(result.embeddings).toHaveLength(1);
       expect(result.usage).toBeUndefined();
       expect(result.providerMetadata).toStrictEqual({
-        openrouter: {
+        osm: {
           provider: '',
           usage: {
             promptTokens: 0,

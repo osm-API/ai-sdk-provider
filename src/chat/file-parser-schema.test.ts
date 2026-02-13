@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { OpenRouterNonStreamChatCompletionResponseSchema } from './schemas';
+import { OsmNonStreamChatCompletionResponseSchema } from './schemas';
 
 describe('FileParser annotation schema', () => {
   it('should parse response with all real API fields', () => {
@@ -46,8 +46,7 @@ describe('FileParser annotation schema', () => {
       },
     };
 
-    const result =
-      OpenRouterNonStreamChatCompletionResponseSchema.parse(response);
+    const result = OsmNonStreamChatCompletionResponseSchema.parse(response);
     expect(result).toBeDefined();
   });
 
@@ -98,8 +97,7 @@ describe('FileParser annotation schema', () => {
       },
     };
 
-    const result =
-      OpenRouterNonStreamChatCompletionResponseSchema.parse(response);
+    const result = OsmNonStreamChatCompletionResponseSchema.parse(response);
 
     // Check that parsing succeeded
     expect(result).toBeDefined();

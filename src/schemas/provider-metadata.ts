@@ -29,9 +29,9 @@ export const FileAnnotationSchema = z
 export type FileAnnotation = z.infer<typeof FileAnnotationSchema>;
 
 /**
- * Schema for OpenRouter provider metadata attached to responses
+ * Schema for osm provider metadata attached to responses
  */
-export const OpenRouterProviderMetadataSchema = z
+export const osmProviderMetadataSchema = z
   .object({
     provider: z.string(),
     reasoning_details: z.array(ReasoningDetailUnionSchema).optional(),
@@ -65,16 +65,14 @@ export const OpenRouterProviderMetadataSchema = z
   })
   .catchall(z.any());
 
-export type OpenRouterProviderMetadata = z.infer<
-  typeof OpenRouterProviderMetadataSchema
->;
+export type osmProviderMetadata = z.infer<typeof osmProviderMetadataSchema>;
 
 /**
  * Schema for parsing provider options that may contain reasoning_details and annotations
  */
-export const OpenRouterProviderOptionsSchema = z
+export const osmProviderOptionsSchema = z
   .object({
-    openrouter: z
+    osm: z
       .object({
         reasoning_details: z.array(ReasoningDetailUnionSchema).optional(),
         annotations: z.array(FileAnnotationSchema).optional(),

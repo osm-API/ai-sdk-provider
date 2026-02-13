@@ -14,7 +14,7 @@
 import { deflateSync } from 'node:zlib';
 import { generateImage } from 'ai';
 import { describe, expect, it, vi } from 'vitest';
-import { createOpenRouter } from '@/src';
+import { createOsm } from '@/src';
 
 vi.setConfig({
   testTimeout: 120_000,
@@ -76,8 +76,8 @@ function generateTestPng(): string {
 }
 
 describe('Issue #386: files parameter in image generation', () => {
-  const openrouter = createOpenRouter({
-    apiKey: process.env.OPENROUTER_API_KEY,
+  const openrouter = createOsm({
+    apiKey: process.env.OSM_API_KEY,
   });
 
   it('should generate image from text-only prompt without regression', async () => {

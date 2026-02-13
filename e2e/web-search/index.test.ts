@@ -1,7 +1,7 @@
 import { streamText } from 'ai';
 import { writeFile } from 'fs/promises';
 import { describe, expect, it, vi } from 'vitest';
-import { createOpenRouter } from '@/src';
+import { createOsm } from '@/src';
 
 vi.setConfig({
   testTimeout: 60_000,
@@ -9,8 +9,8 @@ vi.setConfig({
 
 describe('Web Search E2E Tests', () => {
   it('should handle web search citations in streaming response', async () => {
-    const openrouter = createOpenRouter({
-      apiKey: process.env.OPENROUTER_API_KEY,
+    const openrouter = createOsm({
+      apiKey: process.env.OSM_API_KEY,
       baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
     });
 

@@ -8,15 +8,15 @@
  */
 import { streamText } from 'ai';
 import { describe, expect, it, vi } from 'vitest';
-import { createOpenRouter } from '@/src';
+import { createOsm } from '@/src';
 
 vi.setConfig({
   testTimeout: 120_000,
 });
 
 describe('Issue #237: Reasoning line breaks in reasoning-delta stream', () => {
-  const provider = createOpenRouter({
-    apiKey: process.env.OPENROUTER_API_KEY,
+  const provider = createOsm({
+    apiKey: process.env.OSM_API_KEY,
     baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
   });
 

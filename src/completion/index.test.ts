@@ -6,7 +6,7 @@ import type {
 import { convertReadableStreamToArray } from '@ai-sdk/provider-utils/test';
 import { createTestServer } from '@ai-sdk/test-server';
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
-import { createOpenRouter } from '../provider';
+import { createOsm } from '../provider';
 
 vi.mock('@/src/version', () => ({
   VERSION: '0.0.0-test',
@@ -43,7 +43,7 @@ const TEST_LOGPROBS = {
   ] as Record<string, number>[],
 };
 
-const provider = createOpenRouter({
+const provider = createOsm({
   apiKey: 'test-api-key',
   compatibility: 'strict',
 });
@@ -52,7 +52,7 @@ const model = provider.completion('openai/gpt-3.5-turbo-instruct');
 
 describe('doGenerate', () => {
   const server = createTestServer({
-    'https://openrouter.ai/api/v1/completions': {
+    'https://osm.ai/api/v1/completions': {
       response: { type: 'json-value', body: {} },
     },
   });
@@ -96,7 +96,7 @@ describe('doGenerate', () => {
     finish_reason?: string;
     provider?: string;
   }) {
-    server.urls['https://openrouter.ai/api/v1/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/completions']!.response = {
       type: 'json-value',
       body: {
         id: 'cmpl-96cAM1v77r4jXa4qb2NSmRREV5oWB',
@@ -205,7 +205,7 @@ describe('doGenerate', () => {
     });
 
     expect(providerMetadata).toStrictEqual({
-      openrouter: {
+      osm: {
         provider: 'openai',
         usage: {
           promptTokens: 10,
@@ -232,14 +232,14 @@ describe('doGenerate', () => {
       prompt: TEST_PROMPT,
     });
 
-    const openrouterMetadata = providerMetadata?.openrouter as {
+    const osmMetadata = providerMetadata?.osm as {
       provider?: string;
       usage?: { cost?: number };
     };
 
-    expect(openrouterMetadata?.provider).toBe('google');
-    expect(openrouterMetadata?.usage?.cost).toBeUndefined();
-    expect('cost' in (openrouterMetadata?.usage ?? {})).toBe(false);
+    expect(osmMetadata?.provider).toBe('google');
+    expect(osmMetadata?.usage?.cost).toBeUndefined();
+    expect('cost' in (osmMetadata?.usage ?? {})).toBe(false);
   });
 
   it('should include cost: 0 in providerMetadata when cost is zero', async () => {
@@ -258,11 +258,11 @@ describe('doGenerate', () => {
       prompt: TEST_PROMPT,
     });
 
-    const openrouterMetadata = providerMetadata?.openrouter as {
+    const osmMetadata = providerMetadata?.osm as {
       usage?: { cost?: number };
     };
 
-    expect(openrouterMetadata?.usage?.cost).toBe(0);
+    expect(osmMetadata?.usage?.cost).toBe(0);
   });
 
   it('should default provider to empty string when not returned by API', async () => {
@@ -279,11 +279,11 @@ describe('doGenerate', () => {
       prompt: TEST_PROMPT,
     });
 
-    const openrouterMetadata = providerMetadata?.openrouter as {
+    const osmMetadata = providerMetadata?.osm as {
       provider?: string;
     };
 
-    expect(openrouterMetadata?.provider).toBe('');
+    expect(osmMetadata?.provider).toBe('');
   });
 
   it('should include token details in providerMetadata when provided', async () => {
@@ -311,7 +311,7 @@ describe('doGenerate', () => {
     });
 
     expect(providerMetadata).toStrictEqual({
-      openrouter: {
+      osm: {
         provider: 'anthropic',
         usage: {
           promptTokens: 100,
@@ -334,7 +334,7 @@ describe('doGenerate', () => {
   it('should extract logprobs', async () => {
     prepareJsonResponse({ logprobs: TEST_LOGPROBS });
 
-    const provider = createOpenRouter({ apiKey: 'test-api-key' });
+    const provider = createOsm({ apiKey: 'test-api-key' });
 
     await provider
       .completion('openai/gpt-3.5-turbo', { logprobs: 1 })
@@ -407,7 +407,7 @@ describe('doGenerate', () => {
   it('should pass headers', async () => {
     prepareJsonResponse({ content: '' });
 
-    const provider = createOpenRouter({
+    const provider = createOsm({
       apiKey: 'test-api-key',
       headers: {
         'Custom-Provider-Header': 'provider-header-value',
@@ -429,13 +429,13 @@ describe('doGenerate', () => {
       'custom-provider-header': 'provider-header-value',
       'custom-request-header': 'request-header-value',
     });
-    expect(call.requestUserAgent).toContain('ai-sdk/openrouter/0.0.0-test');
+    expect(call.requestUserAgent).toContain('ai-sdk/osm/0.0.0-test');
   });
 });
 
 describe('doStream', () => {
   const server = createTestServer({
-    'https://openrouter.ai/api/v1/completions': {
+    'https://osm.ai/api/v1/completions': {
       response: { type: 'stream-chunks', chunks: [] },
     },
   });
@@ -477,7 +477,7 @@ describe('doStream', () => {
     } | null;
     finish_reason?: string;
   }) {
-    server.urls['https://openrouter.ai/api/v1/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         ...content.map((text) => {
@@ -521,7 +521,7 @@ describe('doStream', () => {
         type: 'finish',
         finishReason: { unified: 'stop', raw: 'stop' },
         providerMetadata: {
-          openrouter: {
+          osm: {
             usage: {
               promptTokens: 10,
               completionTokens: 362,
@@ -616,15 +616,15 @@ describe('doStream', () => {
       ): element is Extract<LanguageModelV3StreamPart, { type: 'finish' }> =>
         element.type === 'finish',
     );
-    const openrouterUsage = (
-      finishChunk?.providerMetadata?.openrouter as {
+    const osmUsage = (
+      finishChunk?.providerMetadata?.osm as {
         usage?: {
           cost?: number;
           costDetails?: { upstreamInferenceCost: number };
         };
       }
     )?.usage;
-    expect(openrouterUsage?.costDetails).toStrictEqual({
+    expect(osmUsage?.costDetails).toStrictEqual({
       upstreamInferenceCost: 0.0036,
     });
   });
@@ -656,26 +656,26 @@ describe('doStream', () => {
       ): element is Extract<LanguageModelV3StreamPart, { type: 'finish' }> =>
         element.type === 'finish',
     );
-    const openrouterUsage = (
-      finishChunk?.providerMetadata?.openrouter as {
+    const osmUsage = (
+      finishChunk?.providerMetadata?.osm as {
         usage?: {
           cost?: number;
           costDetails?: { upstreamInferenceCost: number };
         };
       }
     )?.usage;
-    expect(openrouterUsage?.costDetails).toStrictEqual({
+    expect(osmUsage?.costDetails).toStrictEqual({
       upstreamInferenceCost: 0.0036,
     });
-    expect(openrouterUsage?.cost).toBe(0.0025);
+    expect(osmUsage?.cost).toBe(0.0025);
   });
 
   it('should handle error stream parts', async () => {
-    server.urls['https://openrouter.ai/api/v1/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         `data: {"error":{"message": "The server had an error processing your request. Sorry about that! You can retry your request, or contact us through our ` +
-          `help center at help.openrouter.com if you keep seeing this error.","type":"server_error","param":null,"code":null}}\n\n`,
+          `help center at help.osm.com if you keep seeing this error.","type":"server_error","param":null,"code":null}}\n\n`,
         'data: [DONE]\n\n',
       ],
     };
@@ -691,7 +691,7 @@ describe('doStream', () => {
           message:
             'The server had an error processing your request. Sorry about that! ' +
             'You can retry your request, or contact us through our help center at ' +
-            'help.openrouter.com if you keep seeing this error.',
+            'help.osm.com if you keep seeing this error.',
           type: 'server_error',
           code: null,
           param: null,
@@ -700,7 +700,7 @@ describe('doStream', () => {
       {
         finishReason: { unified: 'error', raw: undefined },
         providerMetadata: {
-          openrouter: {
+          osm: {
             usage: {},
           },
         },
@@ -724,7 +724,7 @@ describe('doStream', () => {
   });
 
   it('should handle unparsable stream parts', async () => {
-    server.urls['https://openrouter.ai/api/v1/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/completions']!.response = {
       type: 'stream-chunks',
       chunks: ['data: {unparsable}\n\n', 'data: [DONE]\n\n'],
     };
@@ -740,7 +740,7 @@ describe('doStream', () => {
     expect(elements[1]).toStrictEqual({
       finishReason: { unified: 'error', raw: undefined },
       providerMetadata: {
-        openrouter: {
+        osm: {
           usage: {},
         },
       },
@@ -780,7 +780,7 @@ describe('doStream', () => {
   it('should pass headers', async () => {
     prepareStreamResponse({ content: [] });
 
-    const provider = createOpenRouter({
+    const provider = createOsm({
       apiKey: 'test-api-key',
       headers: {
         'Custom-Provider-Header': 'provider-header-value',
@@ -802,13 +802,13 @@ describe('doStream', () => {
       'custom-provider-header': 'provider-header-value',
       'custom-request-header': 'request-header-value',
     });
-    expect(call.requestUserAgent).toContain('ai-sdk/openrouter/0.0.0-test');
+    expect(call.requestUserAgent).toContain('ai-sdk/osm/0.0.0-test');
   });
 
   it('should pass extra body', async () => {
     prepareStreamResponse({ content: [] });
 
-    const provider = createOpenRouter({
+    const provider = createOsm({
       apiKey: 'test-api-key',
       extraBody: {
         custom_field: 'custom_value',
@@ -836,7 +836,7 @@ describe('doStream', () => {
 
 describe('includeRawChunks', () => {
   const server = createTestServer({
-    'https://openrouter.ai/api/v1/completions': {
+    'https://osm.ai/api/v1/completions': {
       response: { type: 'stream-chunks', chunks: [] },
     },
   });
@@ -846,7 +846,7 @@ describe('includeRawChunks', () => {
   afterAll(() => server.server.stop());
 
   function prepareStreamResponse({ content }: { content: string[] }) {
-    server.urls['https://openrouter.ai/api/v1/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         ...content.map(
@@ -931,7 +931,7 @@ describe('includeRawChunks', () => {
   });
 
   it('should emit raw chunk even when parsing fails (for debugging malformed responses)', async () => {
-    server.urls['https://openrouter.ai/api/v1/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/completions']!.response = {
       type: 'stream-chunks',
       chunks: ['data: {unparsable}\n\n', 'data: [DONE]\n\n'],
     };

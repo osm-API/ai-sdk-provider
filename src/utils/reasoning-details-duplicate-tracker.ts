@@ -10,8 +10,8 @@ import { ReasoningDetailType } from '../schemas/reasoning-details';
  * contains unique reasoning details, preventing "Duplicate item found with id"
  * errors in multi-turn conversations.
  *
- * The canonical key logic matches the OpenRouter API's deduplication exactly
- * (see openrouter-web/packages/llm-interfaces/reasonings/duplicate-tracker.ts):
+ * The canonical key logic matches the Osm API's deduplication exactly
+ * (see osm-web/packages/llm-interfaces/reasonings/duplicate-tracker.ts):
  * - Summary: key = summary field
  * - Encrypted: key = id field (if truthy) or data field
  * - Text: key = text field (if truthy) or signature field (if truthy)
@@ -39,8 +39,8 @@ export class ReasoningDetailsDuplicateTracker {
   }
 
   private getCanonicalKey(detail: ReasoningDetailUnion): string | null {
-    // This logic matches the OpenRouter API's deduplication exactly.
-    // See: openrouter-web/packages/llm-interfaces/reasonings/duplicate-tracker.ts
+    // This logic matches the Osm API's deduplication exactly.
+    // See: osm-web/packages/llm-interfaces/reasonings/duplicate-tracker.ts
     switch (detail.type) {
       case ReasoningDetailType.Summary:
         return detail.summary;

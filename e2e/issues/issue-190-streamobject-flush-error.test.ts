@@ -15,15 +15,15 @@ import type { JSONSchema7 } from 'json-schema';
 
 import { jsonSchema, streamObject } from 'ai';
 import { describe, expect, it, vi } from 'vitest';
-import { createOpenRouter } from '@/src';
+import { createOsm } from '@/src';
 
 vi.setConfig({
   testTimeout: 60_000,
 });
 
 describe('Issue #190: streamObject flush TypeError', () => {
-  const openrouter = createOpenRouter({
-    apiKey: process.env.OPENROUTER_API_KEY,
+  const openrouter = createOsm({
+    apiKey: process.env.OSM_API_KEY,
     baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
   });
 

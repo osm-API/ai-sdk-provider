@@ -8,34 +8,34 @@ import type {
 import type { ReasoningDetailUnion } from '../schemas/reasoning-details';
 import type {
   ChatCompletionContentPart,
-  OpenRouterChatCompletionsInput,
-} from '../types/openrouter-chat-completions-input';
+  OsmChatCompletionsInput,
+} from '../types/osm-chat-completions-input';
 
-import { OpenRouterProviderOptionsSchema } from '../schemas/provider-metadata';
+import { osmProviderOptionsSchema } from '../schemas/provider-metadata';
 import { ReasoningDetailsDuplicateTracker } from '../utils/reasoning-details-duplicate-tracker';
 import { getFileUrl, getInputAudioData } from './file-url-utils';
 import { isUrl } from './is-url';
 
-// Type for OpenRouter Cache Control following Anthropic's pattern
-export type OpenRouterCacheControl = { type: 'ephemeral' };
+// Type for Osm Cache Control following Anthropic's pattern
+export type OsmCacheControl = { type: 'ephemeral' };
 
 function getCacheControl(
   providerMetadata: SharedV3ProviderMetadata | undefined,
-): OpenRouterCacheControl | undefined {
+): OsmCacheControl | undefined {
   const anthropic = providerMetadata?.anthropic;
-  const openrouter = providerMetadata?.openrouter;
+  const osm = providerMetadata?.osm;
 
   // Allow both cacheControl and cache_control:
-  return (openrouter?.cacheControl ??
-    openrouter?.cache_control ??
+  return (osm?.cacheControl ??
+    osm?.cache_control ??
     anthropic?.cacheControl ??
-    anthropic?.cache_control) as OpenRouterCacheControl | undefined;
+    anthropic?.cache_control) as OsmCacheControl | undefined;
 }
 
-export function convertToOpenRouterChatMessages(
+export function convertToOsmChatMessages(
   prompt: LanguageModelV3Prompt,
-): OpenRouterChatCompletionsInput {
-  const messages: OpenRouterChatCompletionsInput = [];
+): OsmChatCompletionsInput {
+  const messages: OsmChatCompletionsInput = [];
 
   // Track reasoning_details across all messages in this conversion to prevent duplicates.
   // This fixes issue #254 where the same reasoning ID appears in multiple
@@ -138,9 +138,7 @@ export function convertToOpenRouterChatMessages(
                 }
 
                 const fileName = String(
-                  part.providerOptions?.openrouter?.filename ??
-                    part.filename ??
-                    '',
+                  part.providerOptions?.osm?.filename ?? part.filename ?? '',
                 );
 
                 const fileData = getFileUrl({
@@ -232,12 +230,12 @@ export function convertToOpenRouterChatMessages(
 
         // Check message-level providerOptions for preserved reasoning_details and annotations
         const parsedProviderOptions =
-          OpenRouterProviderOptionsSchema.safeParse(providerOptions);
+          osmProviderOptionsSchema.safeParse(providerOptions);
         const messageReasoningDetails = parsedProviderOptions.success
-          ? parsedProviderOptions.data?.openrouter?.reasoning_details
+          ? parsedProviderOptions.data?.osm?.reasoning_details
           : undefined;
         const messageAnnotations = parsedProviderOptions.success
-          ? parsedProviderOptions.data?.openrouter?.annotations
+          ? parsedProviderOptions.data?.osm?.annotations
           : undefined;
 
         // Use message-level reasoning_details if available, otherwise find from parts
@@ -338,10 +336,10 @@ function findFirstReasoningDetails(
   // First, try tool calls - they have complete accumulated reasoning_details
   for (const part of content) {
     if (part.type === 'tool-call') {
-      const openrouter = part.providerOptions?.openrouter as
+      const osm = part.providerOptions?.osm as
         | Record<string, unknown>
         | undefined;
-      const details = openrouter?.reasoning_details;
+      const details = osm?.reasoning_details;
       if (Array.isArray(details) && details.length > 0) {
         return details as ReasoningDetailUnion[];
       }
@@ -351,15 +349,13 @@ function findFirstReasoningDetails(
   // Fall back to reasoning parts - they have delta reasoning_details
   for (const part of content) {
     if (part.type === 'reasoning') {
-      const parsed = OpenRouterProviderOptionsSchema.safeParse(
-        part.providerOptions,
-      );
+      const parsed = osmProviderOptionsSchema.safeParse(part.providerOptions);
       if (
         parsed.success &&
-        parsed.data?.openrouter?.reasoning_details &&
-        parsed.data.openrouter.reasoning_details.length > 0
+        parsed.data?.osm?.reasoning_details &&
+        parsed.data.osm.reasoning_details.length > 0
       ) {
-        return parsed.data.openrouter.reasoning_details;
+        return parsed.data.osm.reasoning_details;
       }
     }
   }
