@@ -7,11 +7,11 @@ vi.setConfig({
 });
 
 it('receive usage accounting', async () => {
-  const openrouter = createOsm({
+  const osmProvider = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
-  const model = openrouter('anthropic/claude-3.7-sonnet:thinking', {
+  const model = osmProvider('anthropic/claude-3.7-sonnet:thinking', {
     usage: {
       include: true,
     },
@@ -25,7 +25,7 @@ it('receive usage accounting', async () => {
       },
     ],
     onFinish(e) {
-      expect(e.providerMetadata?.openrouter).toMatchObject({
+      expect(e.providerMetadata?.osm).toMatchObject({
         usage: expect.objectContaining({
           promptTokens: expect.any(Number),
           completionTokens: expect.any(Number),
@@ -41,7 +41,7 @@ it('receive usage accounting', async () => {
   await response.consumeStream();
   const providerMetadata = await response.providerMetadata;
   // You can use expect.any(Type) or expect.objectContaining for schema-like matching
-  expect(providerMetadata?.openrouter).toMatchObject({
+  expect(providerMetadata?.osm).toMatchObject({
     provider: expect.any(String),
     usage: expect.objectContaining({
       promptTokens: expect.any(Number),

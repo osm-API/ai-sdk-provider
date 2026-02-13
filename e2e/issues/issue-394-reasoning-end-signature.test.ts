@@ -19,7 +19,7 @@ vi.setConfig({
 describe('Issue #394: reasoning-end should include accumulated reasoning_details with signature', () => {
   const provider = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
   it('should include reasoning_details with signature in reasoning-end providerMetadata for text-only streaming response', async () => {
@@ -29,7 +29,7 @@ describe('Issue #394: reasoning-end should include accumulated reasoning_details
       model,
       prompt: 'What is 2+2? Answer briefly.',
       providerOptions: {
-        openrouter: {
+        osm: {
           reasoning: 'enabled',
         },
       },
@@ -61,7 +61,7 @@ describe('Issue #394: reasoning-end should include accumulated reasoning_details
 
     expect(reasoningEndProviderMetadata).toBeDefined();
 
-    const openrouterMeta = reasoningEndProviderMetadata?.openrouter as
+    const openrouterMeta = reasoningEndProviderMetadata?.osm as
       | Record<string, unknown>
       | undefined;
     expect(openrouterMeta).toBeDefined();
@@ -88,7 +88,7 @@ describe('Issue #394: reasoning-end should include accumulated reasoning_details
       model,
       prompt: 'What is the capital of France? Answer in one word.',
       providerOptions: {
-        openrouter: {
+        osm: {
           reasoning: 'enabled',
         },
       },
@@ -118,7 +118,7 @@ describe('Issue #394: reasoning-end should include accumulated reasoning_details
 
           const openrouterMeta = (
             part as { providerMetadata?: Record<string, unknown> }
-          ).providerMetadata?.openrouter as Record<string, unknown> | undefined;
+          ).providerMetadata?.osm as Record<string, unknown> | undefined;
           expect(openrouterMeta).toBeDefined();
 
           const details = openrouterMeta?.reasoning_details as

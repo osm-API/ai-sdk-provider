@@ -20,12 +20,12 @@ const prompts = [
 
 describe('Vercel AI SDK tools call with reasoning', () => {
   it('should work with reasoning content', async () => {
-    const openrouter = createOsm({
+    const osm = createOsm({
       apiKey: process.env.OSM_API_KEY,
-      baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+      baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
     });
 
-    const model = openrouter('anthropic/claude-sonnet-4', {
+    const model = osm('anthropic/claude-sonnet-4', {
       usage: {
         include: true,
       },
@@ -53,7 +53,7 @@ describe('Vercel AI SDK tools call with reasoning', () => {
           executeCommand: executeCommandInTerminalTool,
         },
         providerOptions: {
-          openrouter: {
+          osm: {
             reasoning: {
               exclude: false,
               max_tokens: 2048,

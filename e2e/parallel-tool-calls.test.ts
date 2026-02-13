@@ -49,8 +49,8 @@ interface ProviderConfig {
   name: string;
   model: string;
   providerOptions:
-    | { openrouter: { reasoning: { effort: string } } }
-    | { openrouter: { includeReasoning: boolean } }
+    | { osm: { reasoning: { effort: string } } }
+    | { osm: { includeReasoning: boolean } }
     | undefined;
   hasReasoning: boolean;
 }
@@ -59,13 +59,13 @@ const providersWithReasoning: ProviderConfig[] = [
   {
     name: 'claude',
     model: 'anthropic/claude-haiku-4.5',
-    providerOptions: { openrouter: { reasoning: { effort: 'medium' } } },
+    providerOptions: { osm: { reasoning: { effort: 'medium' } } },
     hasReasoning: true,
   },
   {
     name: 'gemini',
     model: 'google/gemini-3-flash-preview',
-    providerOptions: { openrouter: { includeReasoning: true } },
+    providerOptions: { osm: { includeReasoning: true } },
     hasReasoning: true,
   },
 ];
@@ -97,7 +97,7 @@ function verifyReasoningDetailsDeduplication(
   const firstToolCallProviderOptions = toolCallContents[0]?.providerOptions as
     | Record<string, Record<string, unknown>>
     | undefined;
-  const firstReasoningDetails = firstToolCallProviderOptions?.openrouter
+  const firstReasoningDetails = firstToolCallProviderOptions?.osm
     ?.reasoning_details as Array<unknown> | undefined;
 
   // First tool call MUST have non-empty reasoning_details
@@ -117,7 +117,7 @@ function verifyReasoningDetailsDeduplication(
     const toolCallProviderOptions = toolCallContents[i]?.providerOptions as
       | Record<string, Record<string, unknown>>
       | undefined;
-    const reasoningDetails = toolCallProviderOptions?.openrouter
+    const reasoningDetails = toolCallProviderOptions?.osm
       ?.reasoning_details as Array<unknown> | undefined;
 
     expect(
@@ -162,14 +162,14 @@ describe('Parallel tool calls', () => {
       providerOptions,
     }) => {
       it('should deduplicate reasoning_details with streamText', async () => {
-        const openrouter = createOsm({
+        const osm = createOsm({
           apiKey: process.env.OSM_API_KEY,
-          baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+          baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
         });
 
         // First request - should trigger parallel tool calls with reasoning
         const firstResult = await streamText({
-          model: openrouter(model),
+          model: osm(model),
           system:
             'You are a helpful assistant. When asked for weather and time, always call BOTH tools in parallel.',
           prompt: 'What is the weather in San Francisco and what time is it?',
@@ -207,7 +207,7 @@ describe('Parallel tool calls', () => {
 
         // Second request - continuation should succeed (this was the bug symptom)
         const secondResult = await streamText({
-          model: openrouter(model),
+          model: osm(model),
           system:
             'You are a helpful assistant. When asked for weather and time, always call BOTH tools in parallel.',
           messages: firstResponse.messages,
@@ -228,14 +228,14 @@ describe('Parallel tool calls', () => {
       });
 
       it('should deduplicate reasoning_details with generateText', async () => {
-        const openrouter = createOsm({
+        const osm = createOsm({
           apiKey: process.env.OSM_API_KEY,
-          baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+          baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
         });
 
         // First request - should trigger parallel tool calls with reasoning
         const firstResult = await generateText({
-          model: openrouter(model),
+          model: osm(model),
           system:
             'You are a helpful assistant. When asked for weather and time, always call BOTH tools in parallel.',
           prompt: 'What is the weather in San Francisco and what time is it?',
@@ -273,7 +273,7 @@ describe('Parallel tool calls', () => {
 
         // Second request - continuation should succeed (this was the bug symptom)
         const secondResult = await generateText({
-          model: openrouter(model),
+          model: osm(model),
           system:
             'You are a helpful assistant. When asked for weather and time, always call BOTH tools in parallel.',
           messages: firstResponse.messages,
@@ -300,13 +300,13 @@ describe('Parallel tool calls', () => {
       providerOptions,
     }) => {
       it('should handle parallel tool calls with streamText', async () => {
-        const openrouter = createOsm({
+        const osm = createOsm({
           apiKey: process.env.OSM_API_KEY,
-          baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+          baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
         });
 
         const firstResult = await streamText({
-          model: openrouter(model),
+          model: osm(model),
           system:
             'You are a helpful assistant. When asked for weather and time, always call BOTH tools in parallel.',
           prompt: 'What is the weather in San Francisco and what time is it?',
@@ -342,7 +342,7 @@ describe('Parallel tool calls', () => {
         verifyParallelToolCalls(toolCallContents);
 
         const secondResult = await streamText({
-          model: openrouter(model),
+          model: osm(model),
           system:
             'You are a helpful assistant. When asked for weather and time, always call BOTH tools in parallel.',
           messages: firstResponse.messages,
@@ -362,13 +362,13 @@ describe('Parallel tool calls', () => {
       });
 
       it('should handle parallel tool calls with generateText', async () => {
-        const openrouter = createOsm({
+        const osm = createOsm({
           apiKey: process.env.OSM_API_KEY,
-          baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+          baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
         });
 
         const firstResult = await generateText({
-          model: openrouter(model),
+          model: osm(model),
           system:
             'You are a helpful assistant. When asked for weather and time, always call BOTH tools in parallel.',
           prompt: 'What is the weather in San Francisco and what time is it?',
@@ -404,7 +404,7 @@ describe('Parallel tool calls', () => {
         verifyParallelToolCalls(toolCallContents);
 
         const secondResult = await generateText({
-          model: openrouter(model),
+          model: osm(model),
           system:
             'You are a helpful assistant. When asked for weather and time, always call BOTH tools in parallel.',
           messages: firstResponse.messages,

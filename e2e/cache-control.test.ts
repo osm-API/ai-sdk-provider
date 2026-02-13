@@ -12,7 +12,7 @@ it('should trigger cache read', async () => {
   // Second call to test cache read
   const response = await callLLM();
   const providerMetadata = await response.providerMetadata;
-  expect(providerMetadata?.openrouter).toMatchObject({
+  expect(providerMetadata?.osm).toMatchObject({
     usage: expect.objectContaining({
       promptTokens: expect.any(Number),
       completionTokens: expect.any(Number),
@@ -27,18 +27,18 @@ it('should trigger cache read', async () => {
 
   const cachedTokens = Number(
     // @ts-expect-error
-    providerMetadata?.openrouter?.usage?.promptTokensDetails?.cachedTokens,
+    providerMetadata?.osm?.usage?.promptTokensDetails?.cachedTokens,
   );
 
   expect(cachedTokens).toBeGreaterThan(0);
 });
 
 async function callLLM() {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
-  const model = openrouter('anthropic/claude-3.7-sonnet', {
+  const model = osm('anthropic/claude-3.7-sonnet', {
     usage: {
       include: true,
     },
@@ -53,7 +53,7 @@ async function callLLM() {
             type: 'text',
             text: 'a'.repeat(4200),
             providerOptions: {
-              openrouter: {
+              osm: {
                 cache_control: {
                   type: 'ephemeral',
                 },

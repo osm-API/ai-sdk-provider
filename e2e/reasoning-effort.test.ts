@@ -8,12 +8,12 @@ vi.setConfig({
 
 describe('Reasoning effort parameter', () => {
   it('should work with reasoning.effort set to low', async () => {
-    const openrouter = createOsm({
+    const osm = createOsm({
       apiKey: process.env.OSM_API_KEY,
-      baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+      baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
     });
 
-    const model = openrouter('anthropic/claude-sonnet-4', {
+    const model = osm('anthropic/claude-sonnet-4', {
       usage: {
         include: true,
       },
@@ -28,7 +28,7 @@ describe('Reasoning effort parameter', () => {
         },
       ],
       providerOptions: {
-        openrouter: {
+        osm: {
           reasoning: {
             effort: 'low',
           },
@@ -41,7 +41,7 @@ describe('Reasoning effort parameter', () => {
 
     expect(response.usage.totalTokens).toBeGreaterThan(0);
 
-    expect(response.providerMetadata?.openrouter).toMatchObject({
+    expect(response.providerMetadata?.osm).toMatchObject({
       usage: expect.objectContaining({
         promptTokens: expect.any(Number),
         completionTokens: expect.any(Number),
@@ -51,12 +51,12 @@ describe('Reasoning effort parameter', () => {
   });
 
   it('should work with reasoning.effort set to medium', async () => {
-    const openrouter = createOsm({
+    const osm = createOsm({
       apiKey: process.env.OSM_API_KEY,
-      baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+      baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
     });
 
-    const model = openrouter('anthropic/claude-sonnet-4', {
+    const model = osm('anthropic/claude-sonnet-4', {
       usage: {
         include: true,
       },
@@ -71,7 +71,7 @@ describe('Reasoning effort parameter', () => {
         },
       ],
       providerOptions: {
-        openrouter: {
+        osm: {
           reasoning: {
             effort: 'medium',
           },
@@ -84,7 +84,7 @@ describe('Reasoning effort parameter', () => {
 
     expect(response.usage.totalTokens).toBeGreaterThan(0);
 
-    expect(response.providerMetadata?.openrouter).toMatchObject({
+    expect(response.providerMetadata?.osm).toMatchObject({
       usage: expect.objectContaining({
         promptTokens: expect.any(Number),
         completionTokens: expect.any(Number),
@@ -94,12 +94,12 @@ describe('Reasoning effort parameter', () => {
   });
 
   it('should work with reasoning.effort set to high', async () => {
-    const openrouter = createOsm({
+    const osm = createOsm({
       apiKey: process.env.OSM_API_KEY,
-      baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+      baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
     });
 
-    const model = openrouter('anthropic/claude-sonnet-4', {
+    const model = osm('anthropic/claude-sonnet-4', {
       usage: {
         include: true,
       },
@@ -115,7 +115,7 @@ describe('Reasoning effort parameter', () => {
         },
       ],
       providerOptions: {
-        openrouter: {
+        osm: {
           reasoning: {
             effort: 'high',
           },
@@ -128,7 +128,7 @@ describe('Reasoning effort parameter', () => {
 
     expect(response.usage.totalTokens).toBeGreaterThan(0);
 
-    expect(response.providerMetadata?.openrouter).toMatchObject({
+    expect(response.providerMetadata?.osm).toMatchObject({
       usage: expect.objectContaining({
         promptTokens: expect.any(Number),
         completionTokens: expect.any(Number),

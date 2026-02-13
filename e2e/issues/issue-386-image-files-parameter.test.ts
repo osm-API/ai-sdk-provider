@@ -76,13 +76,13 @@ function generateTestPng(): string {
 }
 
 describe('Issue #386: files parameter in image generation', () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
   });
 
   it('should generate image from text-only prompt without regression', async () => {
     const result = await generateImage({
-      model: openrouter.imageModel('google/gemini-2.5-flash-image'),
+      model: osm.imageModel('google/gemini-2.5-flash-image'),
       prompt: 'A simple red circle on a white background',
     });
 
@@ -95,7 +95,7 @@ describe('Issue #386: files parameter in image generation', () => {
     const testImageBase64 = generateTestPng();
 
     const result = await generateImage({
-      model: openrouter.imageModel('google/gemini-2.5-flash-image'),
+      model: osm.imageModel('google/gemini-2.5-flash-image'),
       prompt: {
         text: 'Add a blue border around this image',
         images: [`data:image/png;base64,${testImageBase64}`],

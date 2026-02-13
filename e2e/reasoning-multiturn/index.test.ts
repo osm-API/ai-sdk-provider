@@ -10,9 +10,9 @@ vi.setConfig({
 
 describe('Vercel AI SDK tools call with reasoning', () => {
   it('should work with reasoning content', async () => {
-    const openrouter = createOsm({
+    const osm = createOsm({
       apiKey: process.env.OSM_API_KEY,
-      baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+      baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
       extraBody: {
         reasoning: {
           exclude: false,
@@ -21,7 +21,7 @@ describe('Vercel AI SDK tools call with reasoning', () => {
       },
     });
 
-    const model = openrouter('anthropic/claude-sonnet-4.5');
+    const model = osm('anthropic/claude-sonnet-4.5');
 
     const stream = streamText({
       system:

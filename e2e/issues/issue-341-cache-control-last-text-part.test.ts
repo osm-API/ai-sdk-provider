@@ -22,13 +22,13 @@ vi.setConfig({
 });
 
 describe('Issue #341: Cache control only applies to last text part', () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
   // Use Anthropic model which supports cache control
-  const model = openrouter('anthropic/claude-3.5-haiku');
+  const model = osm('anthropic/claude-3.5-haiku');
 
   // Long system prompt to meet caching threshold
   const longSystemPrompt = `You are a helpful assistant. Here is some context that should be cached:

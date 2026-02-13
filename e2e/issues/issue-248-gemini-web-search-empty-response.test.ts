@@ -24,13 +24,13 @@ vi.setConfig({
 });
 
 describe('Issue #248: Gemini 3 Pro Preview web search empty responses', () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
   describe('google/gemini-3-pro-preview (original issue)', () => {
-    const model = openrouter('google/gemini-3-pro-preview');
+    const model = osm('google/gemini-3-pro-preview');
 
     it('should return non-empty response with generateText using exact issue code pattern', async () => {
       // Exact code pattern from issue #248:
@@ -38,7 +38,7 @@ describe('Issue #248: Gemini 3 Pro Preview web search empty responses', () => {
       const response = await generateText({
         model,
         providerOptions: {
-          openrouter: {
+          osm: {
             reasoning: { effort: 'high' },
             plugins: [{ id: 'web' }],
           },
@@ -60,7 +60,7 @@ describe('Issue #248: Gemini 3 Pro Preview web search empty responses', () => {
       const result = await streamText({
         model,
         providerOptions: {
-          openrouter: {
+          osm: {
             reasoning: { effort: 'high' },
             plugins: [{ id: 'web' }],
           },
@@ -84,7 +84,7 @@ describe('Issue #248: Gemini 3 Pro Preview web search empty responses', () => {
       const response = await generateText({
         model,
         providerOptions: {
-          openrouter: {
+          osm: {
             reasoning: { effort: 'high' },
             plugins: [{ id: 'web' }],
           },
@@ -104,13 +104,13 @@ describe('Issue #248: Gemini 3 Pro Preview web search empty responses', () => {
   });
 
   describe('google/gemini-3-flash-preview (Jan 27 comment: "works")', () => {
-    const model = openrouter('google/gemini-3-flash-preview');
+    const model = osm('google/gemini-3-flash-preview');
 
     it('should return non-empty response with web search', async () => {
       const response = await generateText({
         model,
         providerOptions: {
-          openrouter: {
+          osm: {
             reasoning: { effort: 'high' },
             plugins: [{ id: 'web' }],
           },
@@ -130,13 +130,13 @@ describe('Issue #248: Gemini 3 Pro Preview web search empty responses', () => {
   });
 
   describe('anthropic/claude-sonnet-4 (Dec 7 comment: stream cuts, partial response)', () => {
-    const model = openrouter('anthropic/claude-sonnet-4');
+    const model = osm('anthropic/claude-sonnet-4');
 
     it('should return complete streaming response with web search', async () => {
       const result = await streamText({
         model,
         providerOptions: {
-          openrouter: {
+          osm: {
             plugins: [{ id: 'web' }],
           },
         },
@@ -156,13 +156,13 @@ describe('Issue #248: Gemini 3 Pro Preview web search empty responses', () => {
   });
 
   describe('anthropic/claude-opus-4 (Dec 7 comment: bugs out, no error)', () => {
-    const model = openrouter('anthropic/claude-opus-4');
+    const model = osm('anthropic/claude-opus-4');
 
     it('should return non-empty response with web search', async () => {
       const response = await generateText({
         model,
         providerOptions: {
-          openrouter: {
+          osm: {
             plugins: [{ id: 'web' }],
           },
         },
@@ -181,13 +181,13 @@ describe('Issue #248: Gemini 3 Pro Preview web search empty responses', () => {
   });
 
   describe('openai/gpt-4.1 (Dec 7 comment: "only consistent experience")', () => {
-    const model = openrouter('openai/gpt-4.1');
+    const model = osm('openai/gpt-4.1');
 
     it('should return non-empty response with web search', async () => {
       const response = await generateText({
         model,
         providerOptions: {
-          openrouter: {
+          osm: {
             plugins: [{ id: 'web' }],
           },
         },

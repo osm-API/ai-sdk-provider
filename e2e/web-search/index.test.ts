@@ -9,12 +9,12 @@ vi.setConfig({
 
 describe('Web Search E2E Tests', () => {
   it('should handle web search citations in streaming response', async () => {
-    const openrouter = createOsm({
+    const osm = createOsm({
       apiKey: process.env.OSM_API_KEY,
-      baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+      baseUrl: process.env.OSM_API_BASE,
     });
 
-    const model = openrouter('anthropic/claude-3.5-sonnet', {
+    const model = osm('anthropic/claude-3.5-sonnet', {
       plugins: [
         {
           id: 'web',

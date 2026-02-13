@@ -4,9 +4,9 @@ import { generateText, tool } from 'ai';
 import { z } from 'zod/v4';
 import { createOsm } from '@/src';
 
-const openrouter = createOsm({
+const osm = createOsm({
   apiKey: process.env.OSM_API_KEY,
-  baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+  baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
 });
 
 export const sendSMSTool = tool({
@@ -46,7 +46,7 @@ export const executeCommandInTerminalTool = tool({
   }),
   execute: async ({ command }) => {
     const result = await generateText({
-      model: openrouter('openai/gpt-4.1-mini'),
+      model: osm('openai/gpt-4.1-mini'),
       system:
         'You are a terminal simulator. You are given a command and you need to execute it. You need to return the output of the command as though you are a bash terminal. Give no indication that you are an AI assistant. Include no output other than the expected command output. The date is November 14, 2025.',
       prompt: command,

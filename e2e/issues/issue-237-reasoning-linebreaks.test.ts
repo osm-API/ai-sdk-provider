@@ -17,7 +17,7 @@ vi.setConfig({
 describe('Issue #237: Reasoning line breaks in reasoning-delta stream', () => {
   const provider = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
   // SKIPPED: Issue is still reproducible as of 2025-01-28. Unskip to verify if fixed.

@@ -17,13 +17,13 @@ vi.setConfig({
 });
 
 describe('Issue #392: auto-router plugin support', () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
   it('should generate text with openrouter/auto and auto-router plugin with allowed_models', async () => {
-    const model = openrouter('openrouter/auto', {
+    const model = osm('openrouter/auto', {
       plugins: [
         {
           id: 'auto-router',
@@ -45,7 +45,7 @@ describe('Issue #392: auto-router plugin support', () => {
   });
 
   it('should generate text with openrouter/auto and auto-router plugin without allowed_models', async () => {
-    const model = openrouter('openrouter/auto', {
+    const model = osm('openrouter/auto', {
       plugins: [{ id: 'auto-router' }],
       usage: { include: true },
     });
@@ -62,7 +62,7 @@ describe('Issue #392: auto-router plugin support', () => {
   });
 
   it('should stream text with openrouter/auto and auto-router plugin with allowed_models', async () => {
-    const model = openrouter('openrouter/auto', {
+    const model = osm('openrouter/auto', {
       plugins: [
         {
           id: 'auto-router',

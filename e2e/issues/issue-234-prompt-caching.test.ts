@@ -36,9 +36,9 @@ interface OpenRouterUsageMetadata {
 }
 
 describe('Issue #234: Prompt caching behavior', () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
   const longSystemPrompt = `You are a helpful assistant. Here is some context that should be cached:
@@ -54,7 +54,7 @@ ${Array(50)
 Remember to be helpful and concise in your responses.`;
 
   describe('GPT 4.1 automatic caching', () => {
-    const model = openrouter('openai/gpt-4.1');
+    const model = osm('openai/gpt-4.1');
 
     it('should correctly expose cachedTokens in providerMetadata structure', async () => {
       interface RequestResult {
@@ -83,9 +83,9 @@ Remember to be helpful and concise in your responses.`;
         expect(response.usage).toBeDefined();
         expect(response.usage.totalTokens).toBeGreaterThan(0);
         expect(response.providerMetadata).toBeDefined();
-        expect(response.providerMetadata?.openrouter).toBeDefined();
+        expect(response.providerMetadata?.osm).toBeDefined();
 
-        const openrouterMetadata = response.providerMetadata?.openrouter as {
+        const openrouterMetadata = response.providerMetadata?.osm as {
           usage?: OpenRouterUsageMetadata;
         };
 
@@ -123,7 +123,7 @@ Remember to be helpful and concise in your responses.`;
   });
 
   describe('Kimi K2 automatic caching', () => {
-    const model = openrouter('moonshotai/kimi-k2-thinking');
+    const model = osm('moonshotai/kimi-k2-thinking');
 
     it('should correctly expose usage structure for Kimi K2 responses', async () => {
       interface RequestResult {
@@ -153,9 +153,9 @@ Remember to be helpful and concise in your responses.`;
         expect(response.usage).toBeDefined();
         expect(response.usage.totalTokens).toBeGreaterThan(0);
         expect(response.providerMetadata).toBeDefined();
-        expect(response.providerMetadata?.openrouter).toBeDefined();
+        expect(response.providerMetadata?.osm).toBeDefined();
 
-        const openrouterMetadata = response.providerMetadata?.openrouter as {
+        const openrouterMetadata = response.providerMetadata?.osm as {
           usage?: OpenRouterUsageMetadata;
         };
 

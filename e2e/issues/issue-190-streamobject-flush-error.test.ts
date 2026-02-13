@@ -22,13 +22,13 @@ vi.setConfig({
 });
 
 describe('Issue #190: streamObject flush TypeError', () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
   // Use a model that supports structured output
-  const model = openrouter('openai/gpt-4o-mini');
+  const model = osm('openai/gpt-4o-mini');
 
   it('should stream structured output without TypeError', async () => {
     // This is the exact schema from the issue report
