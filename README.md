@@ -1,7 +1,5 @@
 # OSM Provider for Vercel AI SDK
 
-This repository is forked from the [OpenRouter AI SDK Provider](https://github.com/OpenRouterTeam/ai-sdk-provider).
-
 The OSM provider for the [Vercel AI SDK](https://sdk.vercel.ai/docs) gives access to language models through the OSM API, compatible with the OpenAI chat completions format.
 
 ## Setup for AI SDK v6
@@ -432,3 +430,7 @@ if (result.providerMetadata?.openrouter?.usage) {
   );
 }
 ```
+
+## Credits
+
+This repository is forked from the [OpenRouter AI SDK Provider](https://github.com/OpenRouterTeam/ai-sdk-provider). We thank the OpenRouter team for the original implementation and architecture that made this provider possible.
