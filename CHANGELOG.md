@@ -1,6 +1,18 @@
 # @osmapi/ai-sdk-provider
 
-## 2.2.3
+## 1.0.1
+
+### Patch Changes
+
+- Move fork attribution to Credits section in README for better discoverability
+
+## 1.0.0
+
+### Initial Release
+
+OSM provider for Vercel AI SDK - fork of OpenRouter provider adapted for OSM API
+
+## 2.2.3 (Original OpenRouter)
 
 ### Patch Changes
 
