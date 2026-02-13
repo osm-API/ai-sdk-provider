@@ -2,7 +2,7 @@ import type { LanguageModelV3FilePart } from '@ai-sdk/provider';
 import type { OsmAudioFormat } from '../types/osm-chat-completions-input';
 
 import { convertUint8ArrayToBase64 } from '@ai-sdk/provider-utils';
-import { OPENROUTER_AUDIO_FORMATS } from '../types/osm-chat-completions-input';
+import { OSM_AUDIO_FORMATS } from '../types/osm-chat-completions-input';
 import { isUrl } from './is-url';
 
 export function buildFileDataUrl({
@@ -155,7 +155,7 @@ export function getInputAudioData(part: LanguageModelV3FilePart): {
   const format = MIME_TO_FORMAT[rawFormat];
 
   if (format === undefined) {
-    const supportedList = OPENROUTER_AUDIO_FORMATS.join(', ');
+    const supportedList = OSM_AUDIO_FORMATS.join(', ');
     throw new Error(
       `Unsupported audio format: "${mediaType}"\n\n` +
         `Osm supports the following audio formats: ${supportedList}\n\n` +
