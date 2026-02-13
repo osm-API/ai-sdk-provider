@@ -61,12 +61,12 @@ describe('Issue #394: reasoning-end should include accumulated reasoning_details
 
     expect(reasoningEndProviderMetadata).toBeDefined();
 
-    const openrouterMeta = reasoningEndProviderMetadata?.osm as
+    const osmMeta = reasoningEndProviderMetadata?.osm as
       | Record<string, unknown>
       | undefined;
-    expect(openrouterMeta).toBeDefined();
+    expect(osmMeta).toBeDefined();
 
-    const reasoningDetails = openrouterMeta?.reasoning_details as
+    const reasoningDetails = osmMeta?.reasoning_details as
       | Array<Record<string, unknown>>
       | undefined;
     expect(reasoningDetails).toBeDefined();
@@ -116,12 +116,12 @@ describe('Issue #394: reasoning-end should include accumulated reasoning_details
         if ('providerMetadata' in part) {
           expect(part.providerMetadata).toBeDefined();
 
-          const openrouterMeta = (
+          const osmMeta = (
             part as { providerMetadata?: Record<string, unknown> }
           ).providerMetadata?.osm as Record<string, unknown> | undefined;
-          expect(openrouterMeta).toBeDefined();
+          expect(osmMeta).toBeDefined();
 
-          const details = openrouterMeta?.reasoning_details as
+          const details = osmMeta?.reasoning_details as
             | Array<Record<string, unknown>>
             | undefined;
           expect(details).toBeDefined();

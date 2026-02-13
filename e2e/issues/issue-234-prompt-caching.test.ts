@@ -85,20 +85,20 @@ Remember to be helpful and concise in your responses.`;
         expect(response.providerMetadata).toBeDefined();
         expect(response.providerMetadata?.osm).toBeDefined();
 
-        const openrouterMetadata = response.providerMetadata?.osm as {
+        const osmMetadata = response.providerMetadata?.osm as {
           usage?: OpenRouterUsageMetadata;
         };
 
-        expect(openrouterMetadata?.usage).toBeDefined();
-        expect(openrouterMetadata?.usage?.promptTokens).toBeGreaterThan(0);
-        expect(openrouterMetadata?.usage?.completionTokens).toBeGreaterThan(0);
+        expect(osmMetadata?.usage).toBeDefined();
+        expect(osmMetadata?.usage?.promptTokens).toBeGreaterThan(0);
+        expect(osmMetadata?.usage?.completionTokens).toBeGreaterThan(0);
 
         const cachedTokens =
-          openrouterMetadata?.usage?.promptTokensDetails?.cachedTokens;
+          osmMetadata?.usage?.promptTokensDetails?.cachedTokens;
 
         responses.push({
-          tokens_prompt: openrouterMetadata?.usage?.promptTokens ?? 0,
-          tokens_completion: openrouterMetadata?.usage?.completionTokens ?? 0,
+          tokens_prompt: osmMetadata?.usage?.promptTokens ?? 0,
+          tokens_completion: osmMetadata?.usage?.completionTokens ?? 0,
           cachedTokens,
         });
 
@@ -155,21 +155,21 @@ Remember to be helpful and concise in your responses.`;
         expect(response.providerMetadata).toBeDefined();
         expect(response.providerMetadata?.osm).toBeDefined();
 
-        const openrouterMetadata = response.providerMetadata?.osm as {
+        const osmMetadata = response.providerMetadata?.osm as {
           usage?: OpenRouterUsageMetadata;
         };
 
-        expect(openrouterMetadata?.usage).toBeDefined();
-        expect(openrouterMetadata?.usage?.promptTokens).toBeGreaterThan(0);
+        expect(osmMetadata?.usage).toBeDefined();
+        expect(osmMetadata?.usage?.promptTokens).toBeGreaterThan(0);
 
         const cachedTokens =
-          openrouterMetadata?.usage?.promptTokensDetails?.cachedTokens;
+          osmMetadata?.usage?.promptTokensDetails?.cachedTokens;
         const reasoningTokens =
-          openrouterMetadata?.usage?.completionTokensDetails?.reasoningTokens;
+          osmMetadata?.usage?.completionTokensDetails?.reasoningTokens;
 
         responses.push({
-          tokens_prompt: openrouterMetadata?.usage?.promptTokens ?? 0,
-          tokens_completion: openrouterMetadata?.usage?.completionTokens ?? 0,
+          tokens_prompt: osmMetadata?.usage?.promptTokens ?? 0,
+          tokens_completion: osmMetadata?.usage?.completionTokens ?? 0,
           cachedTokens,
           reasoningTokens,
         });
