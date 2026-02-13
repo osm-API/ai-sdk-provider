@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub PR #394
- * https://github.com/OpenRouterTeam/ai-sdk-provider/pull/394
+ * https://github.com/osm-API/ai-sdk-provider/pull/394
  *
  * Reported error: Multi-turn conversation failure with Anthropic models when
  * the first turn is a text-only response (no tool calls) with reasoning enabled.
