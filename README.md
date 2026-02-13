@@ -111,10 +111,10 @@ There are 3 ways to pass extra body to OpenRouter:
 1. Via the `providerOptions.openrouter` property:
 
    ```typescript
-   import { createOpenRouter } from '@osm/ai-sdk-provider';
+   import { createOsm } from '@osm/ai-sdk-provider';
    import { streamText } from 'ai';
 
-   const openrouter = createOpenRouter({ apiKey: 'your-api-key' });
+   const openrouter = createOsm({ apiKey: 'your-api-key' });
    const model = openrouter('anthropic/claude-3.7-sonnet:thinking');
    await streamText({
      model,
@@ -132,10 +132,10 @@ There are 3 ways to pass extra body to OpenRouter:
 2. Via the `extraBody` property in the model settings:
 
    ```typescript
-   import { createOpenRouter } from '@osm/ai-sdk-provider';
+   import { createOsm } from '@osm/ai-sdk-provider';
    import { streamText } from 'ai';
 
-   const openrouter = createOpenRouter({ apiKey: 'your-api-key' });
+   const openrouter = createOsm({ apiKey: 'your-api-key' });
    const model = openrouter('anthropic/claude-3.7-sonnet:thinking', {
      extraBody: {
        reasoning: {
@@ -152,10 +152,10 @@ There are 3 ways to pass extra body to OpenRouter:
 3. Via the `extraBody` property in the model factory.
 
    ```typescript
-   import { createOpenRouter } from '@osm/ai-sdk-provider';
+   import { createOsm } from '@osm/ai-sdk-provider';
    import { streamText } from 'ai';
 
-   const openrouter = createOpenRouter({
+   const openrouter = createOsm({
      apiKey: 'your-api-key',
      extraBody: {
        reasoning: {
@@ -177,10 +177,10 @@ You can include Anthropic-specific options directly in your messages when using 
 ### Basic Usage
 
 ```typescript
-import { createOpenRouter } from '@osm/ai-sdk-provider';
+import { createOsm } from '@osm/ai-sdk-provider';
 import { streamText } from 'ai';
 
-const openrouter = createOpenRouter({ apiKey: 'your-api-key' });
+const openrouter = createOsm({ apiKey: 'your-api-key' });
 const model = openrouter('anthropic/<supported-caching-model>');
 
 await streamText({
@@ -230,11 +230,11 @@ You can enable Anthropic beta features by passing custom headers through the Ope
 #### Basic Usage
 
 ```typescript
-import { createOpenRouter } from '@osm/ai-sdk-provider';
+import { createOsm } from '@osm/ai-sdk-provider';
 import { streamObject } from 'ai';
 
-const provider = createOpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY,
+const provider = createOsm({
+  apiKey: process.env.OSM_API_KEY,
   headers: {
     'anthropic-beta': 'fine-grained-tool-streaming-2025-05-14',
   },
@@ -256,11 +256,11 @@ for await (const partialObject of result.partialObjectStream) {
 You can also pass the header at the request level:
 
 ```typescript
-import { createOpenRouter } from '@osm/ai-sdk-provider';
+import { createOsm } from '@osm/ai-sdk-provider';
 import { generateText } from 'ai';
 
-const provider = createOpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY,
+const provider = createOsm({
+  apiKey: process.env.OSM_API_KEY,
 });
 
 const model = provider.chat('anthropic/claude-sonnet-4');
@@ -281,7 +281,7 @@ await generateText({
 This feature is particularly beneficial when streaming large, nested JSON structures like UI component trees:
 
 ```typescript
-import { createOpenRouter } from '@osm/ai-sdk-provider';
+import { createOsm } from '@osm/ai-sdk-provider';
 import { streamObject } from 'ai';
 import { z } from 'zod';
 
@@ -291,8 +291,8 @@ const componentSchema = z.object({
   children: z.array(z.lazy(() => componentSchema)).optional(),
 });
 
-const provider = createOpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY,
+const provider = createOsm({
+  apiKey: process.env.OSM_API_KEY,
   headers: {
     'anthropic-beta': 'fine-grained-tool-streaming-2025-05-14',
   },
@@ -318,11 +318,11 @@ for await (const partialComponent of result.partialObjectStream) {
 The provider supports the [Response Healing plugin](https://openrouter.ai/docs/guides/features/plugins/response-healing), which automatically validates and repairs malformed JSON responses from AI models. This is particularly useful when using `generateObject` or structured outputs, as it can fix common issues like missing brackets, trailing commas, markdown wrappers, and mixed text.
 
 ```typescript
-import { createOpenRouter } from '@osm/ai-sdk-provider';
+import { createOsm } from '@osm/ai-sdk-provider';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 
-const openrouter = createOpenRouter({ apiKey: 'your-api-key' });
+const openrouter = createOsm({ apiKey: 'your-api-key' });
 const model = openrouter('openai/gpt-4o', {
   plugins: [{ id: 'response-healing' }],
 });
@@ -346,10 +346,10 @@ Note that Response Healing only works with non-streaming requests. When the mode
 The provider supports a debug mode that echoes back the request body sent to the upstream provider. This is useful for troubleshooting and understanding how your requests are being processed. Note that debug mode only works with streaming requests.
 
 ```typescript
-import { createOpenRouter } from '@osm/ai-sdk-provider';
+import { createOsm } from '@osm/ai-sdk-provider';
 import { streamText } from 'ai';
 
-const openrouter = createOpenRouter({ apiKey: 'your-api-key' });
+const openrouter = createOsm({ apiKey: 'your-api-key' });
 const model = openrouter('anthropic/claude-3.5-sonnet', {
   debug: {
     echo_upstream_body: true,

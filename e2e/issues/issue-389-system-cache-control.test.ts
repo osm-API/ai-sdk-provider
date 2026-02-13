@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #389
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/389
+ * https://github.com/osm-API/ai-sdk-provider/issues/389
  *
  * Issue: "Anthropic prompt caching not applied when `system` is a string
  * in AI SDK (`ModelMessage[]`); only block content works"
