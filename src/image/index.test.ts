@@ -1,7 +1,7 @@
 import { UnsupportedFunctionalityError } from '@ai-sdk/provider';
 import { describe, expect, it } from 'vitest';
-import { createOpenRouter } from '../provider';
-import { OpenRouterImageModel } from './index';
+import { createOsm } from '../provider';
+import { OsmImageModel } from './index';
 
 const TEST_IMAGE_BASE64 =
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
@@ -111,25 +111,25 @@ function getMessageContent(
   return messages[0]?.content as Array<Record<string, unknown>>;
 }
 
-describe('OpenRouterImageModel', () => {
+describe('OsmImageModel', () => {
   describe('provider methods', () => {
     it('should expose imageModel method', () => {
-      const provider = createOpenRouter({ apiKey: 'test-key' });
+      const provider = createOsm({ apiKey: 'test-key' });
       expect(provider.imageModel).toBeDefined();
       expect(typeof provider.imageModel).toBe('function');
     });
 
     it('should create an image model instance', () => {
-      const provider = createOpenRouter({ apiKey: 'test-key' });
+      const provider = createOsm({ apiKey: 'test-key' });
       const model = provider.imageModel('google/gemini-2.5-flash-image');
-      expect(model).toBeInstanceOf(OpenRouterImageModel);
+      expect(model).toBeInstanceOf(OsmImageModel);
       expect(model.modelId).toBe('google/gemini-2.5-flash-image');
-      expect(model.provider).toBe('openrouter');
+      expect(model.provider).toBe('osm');
       expect(model.specificationVersion).toBe('v3');
     });
 
     it('should have maxImagesPerCall set to 1', () => {
-      const provider = createOpenRouter({ apiKey: 'test-key' });
+      const provider = createOsm({ apiKey: 'test-key' });
       const model = provider.imageModel('google/gemini-2.5-flash-image');
       expect(model.maxImagesPerCall).toBe(1);
     });
@@ -137,7 +137,7 @@ describe('OpenRouterImageModel', () => {
 
   describe('doGenerate', () => {
     it('should generate an image from a text prompt', async () => {
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: createMockFetch(TEST_IMAGE_BASE64),
       });
@@ -162,7 +162,7 @@ describe('OpenRouterImageModel', () => {
 
     it('should pass aspectRatio via image_config', async () => {
       const mock = createCapturingMockFetch(TEST_IMAGE_BASE64);
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mock.fetch,
       });
@@ -187,7 +187,7 @@ describe('OpenRouterImageModel', () => {
 
     it('should pass seed parameter', async () => {
       const mock = createCapturingMockFetch(TEST_IMAGE_BASE64);
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mock.fetch,
       });
@@ -209,7 +209,7 @@ describe('OpenRouterImageModel', () => {
 
     it('should include base64 file as image_url content part in user message', async () => {
       const mock = createCapturingMockFetch(TEST_IMAGE_BASE64);
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mock.fetch,
       });
@@ -256,7 +256,7 @@ describe('OpenRouterImageModel', () => {
 
     it('should include URL file as image_url content part in user message', async () => {
       const mock = createCapturingMockFetch(TEST_IMAGE_BASE64);
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mock.fetch,
       });
@@ -294,7 +294,7 @@ describe('OpenRouterImageModel', () => {
 
     it('should include Uint8Array file as base64 image_url content part', async () => {
       const mock = createCapturingMockFetch(TEST_IMAGE_BASE64);
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mock.fetch,
       });
@@ -331,7 +331,7 @@ describe('OpenRouterImageModel', () => {
 
     it('should include multiple files as multiple image_url content parts', async () => {
       const mock = createCapturingMockFetch(TEST_IMAGE_BASE64);
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mock.fetch,
       });
@@ -370,7 +370,7 @@ describe('OpenRouterImageModel', () => {
 
     it('should send simple string content when no files are provided', async () => {
       const mock = createCapturingMockFetch(TEST_IMAGE_BASE64);
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mock.fetch,
       });
@@ -395,7 +395,7 @@ describe('OpenRouterImageModel', () => {
 
     it('should default to image/png when file mediaType is undefined', async () => {
       const mock = createCapturingMockFetch(TEST_IMAGE_BASE64);
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mock.fetch,
       });
@@ -431,7 +431,7 @@ describe('OpenRouterImageModel', () => {
 
     it('should default to image/png when Uint8Array file has undefined mediaType', async () => {
       const mock = createCapturingMockFetch(TEST_IMAGE_BASE64);
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mock.fetch,
       });
@@ -466,7 +466,7 @@ describe('OpenRouterImageModel', () => {
 
     it('should passthrough existing data URL without re-wrapping', async () => {
       const mock = createCapturingMockFetch(TEST_IMAGE_BASE64);
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mock.fetch,
       });
@@ -500,7 +500,7 @@ describe('OpenRouterImageModel', () => {
     });
 
     it('should throw UnsupportedFunctionalityError when mask parameter is provided', async () => {
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: createMockFetch(TEST_IMAGE_BASE64),
       });
@@ -525,7 +525,7 @@ describe('OpenRouterImageModel', () => {
     });
 
     it('should return warning when n > 1 is requested', async () => {
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: createMockFetch(TEST_IMAGE_BASE64),
       });
@@ -546,12 +546,12 @@ describe('OpenRouterImageModel', () => {
         type: 'unsupported',
         feature: 'n > 1',
         details:
-          'OpenRouter image generation returns 1 image per call. Requested 3 images.',
+          'Osm image generation returns 1 image per call. Requested 3 images.',
       });
     });
 
     it('should return warning when size is provided', async () => {
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: createMockFetch(TEST_IMAGE_BASE64),
       });
@@ -572,7 +572,7 @@ describe('OpenRouterImageModel', () => {
         type: 'unsupported',
         feature: 'size',
         details:
-          'Use aspectRatio instead. Size parameter is not supported by OpenRouter image generation.',
+          'Use aspectRatio instead. Size parameter is not supported by Osm image generation.',
       });
     });
 
@@ -612,7 +612,7 @@ describe('OpenRouterImageModel', () => {
         );
       };
 
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mockFetchNoImages,
       });
@@ -659,7 +659,7 @@ describe('OpenRouterImageModel', () => {
         );
       };
 
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mockFetchEmptyChoices,
       });
@@ -681,7 +681,7 @@ describe('OpenRouterImageModel', () => {
 
     it('should pass provider routing settings', async () => {
       const mock = createCapturingMockFetch(TEST_IMAGE_BASE64);
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mock.fetch,
       });
@@ -710,7 +710,7 @@ describe('OpenRouterImageModel', () => {
     });
 
     it('should include usage information when available', async () => {
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: createMockFetch(TEST_IMAGE_BASE64),
       });
@@ -734,9 +734,9 @@ describe('OpenRouterImageModel', () => {
       });
     });
 
-    it('should apply runtime providerOptions.openrouter to request', async () => {
+    it('should apply runtime providerOptions.osm to request', async () => {
       const mock = createCapturingMockFetch(TEST_IMAGE_BASE64);
-      const provider = createOpenRouter({
+      const provider = createOsm({
         apiKey: 'test-key',
         fetch: mock.fetch,
       });
@@ -751,7 +751,7 @@ describe('OpenRouterImageModel', () => {
         files: undefined,
         mask: undefined,
         providerOptions: {
-          openrouter: {
+          osm: {
             custom_field: 'test_value',
             provider: {
               order: ['google'],

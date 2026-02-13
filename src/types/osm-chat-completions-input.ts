@@ -1,10 +1,10 @@
 import type { FileAnnotation } from '@/src/schemas/provider-metadata';
 import type { ReasoningDetailUnion } from '@/src/schemas/reasoning-details';
 
-// Type for OpenRouter Cache Control following Anthropic's pattern
-export type OpenRouterCacheControl = { type: 'ephemeral' };
+// Type for Osm Cache Control following Anthropic's pattern
+export type OsmCacheControl = { type: 'ephemeral' };
 
-export type OpenRouterChatCompletionsInput = Array<ChatCompletionMessageParam>;
+export type OsmChatCompletionsInput = Array<ChatCompletionMessageParam>;
 
 export type ChatCompletionMessageParam =
   | ChatCompletionSystemMessageParam
@@ -20,7 +20,7 @@ export interface ChatCompletionSystemMessageParam {
 export interface ChatCompletionUserMessageParam {
   role: 'user';
   content: string | Array<ChatCompletionContentPart>;
-  cache_control?: OpenRouterCacheControl;
+  cache_control?: OsmCacheControl;
 }
 
 export type ChatCompletionContentPart =
@@ -36,7 +36,7 @@ export interface ChatCompletionContentPartFile {
     file_data?: string;
     file_id?: string;
   };
-  cache_control?: OpenRouterCacheControl;
+  cache_control?: OsmCacheControl;
 }
 
 export interface ChatCompletionContentPartImage {
@@ -44,17 +44,17 @@ export interface ChatCompletionContentPartImage {
   image_url: {
     url: string;
   };
-  cache_control?: OpenRouterCacheControl;
+  cache_control?: OsmCacheControl;
 }
 
 export interface ChatCompletionContentPartText {
   type: 'text';
   text: string;
   reasoning?: string | null;
-  cache_control?: OpenRouterCacheControl;
+  cache_control?: OsmCacheControl;
 }
 
-/** https://openrouter.ai/docs/guides/overview/multimodal/audio */
+/** https://osm.ai/docs/guides/overview/multimodal/audio */
 export const OPENROUTER_AUDIO_FORMATS = [
   'wav',
   'mp3',
@@ -67,15 +67,15 @@ export const OPENROUTER_AUDIO_FORMATS = [
   'pcm24',
 ] as const;
 
-export type OpenRouterAudioFormat = (typeof OPENROUTER_AUDIO_FORMATS)[number];
+export type OsmAudioFormat = (typeof OPENROUTER_AUDIO_FORMATS)[number];
 
 export interface ChatCompletionContentPartInputAudio {
   type: 'input_audio';
   input_audio: {
     data: string;
-    format: OpenRouterAudioFormat;
+    format: OsmAudioFormat;
   };
-  cache_control?: OpenRouterCacheControl;
+  cache_control?: OsmCacheControl;
 }
 
 export interface ChatCompletionAssistantMessageParam {
@@ -85,7 +85,7 @@ export interface ChatCompletionAssistantMessageParam {
   reasoning_details?: ReasoningDetailUnion[];
   annotations?: FileAnnotation[];
   tool_calls?: Array<ChatCompletionMessageToolCall>;
-  cache_control?: OpenRouterCacheControl;
+  cache_control?: OsmCacheControl;
 }
 
 export interface ChatCompletionMessageToolCall {
@@ -101,5 +101,5 @@ export interface ChatCompletionToolMessageParam {
   role: 'tool';
   content: string;
   tool_call_id: string;
-  cache_control?: OpenRouterCacheControl;
+  cache_control?: OsmCacheControl;
 }

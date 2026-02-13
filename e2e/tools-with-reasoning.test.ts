@@ -7,7 +7,7 @@ import {
   readSMSTool,
   sendSMSTool,
 } from '@/e2e/tools';
-import { createOpenRouter } from '@/src';
+import { createOsm } from '@/src';
 
 vi.setConfig({
   testTimeout: 42_000,
@@ -20,8 +20,8 @@ const prompts = [
 
 describe('Vercel AI SDK tools call with reasoning', () => {
   it('should work with reasoning content', async () => {
-    const openrouter = createOpenRouter({
-      apiKey: process.env.OPENROUTER_API_KEY,
+    const openrouter = createOsm({
+      apiKey: process.env.OSM_API_KEY,
       baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
     });
 

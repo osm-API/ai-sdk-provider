@@ -1,51 +1,57 @@
-# OpenRouter Provider for Vercel AI SDK
+# OSM Provider for Vercel AI SDK
 
-The [OpenRouter](https://openrouter.ai/) provider for the [Vercel AI SDK](https://sdk.vercel.ai/docs) gives access to over 300 large language models on the OpenRouter chat and completion APIs.
+The OSM provider for the [Vercel AI SDK](https://sdk.vercel.ai/docs) gives access to language models through the OSM API, compatible with the OpenAI chat completions format.
 
 ## Setup for AI SDK v6
 
 ```bash
 # For pnpm
-pnpm add @openrouter/ai-sdk-provider
+pnpm add @osm/ai-sdk-provider
 
 # For npm
-npm install @openrouter/ai-sdk-provider
+npm install @osm/ai-sdk-provider
 
 # For yarn
-yarn add @openrouter/ai-sdk-provider
-```
-
-## (LEGACY) Setup for AI SDK v5
-
-```bash
-# For pnpm
-pnpm add @openrouter/ai-sdk-provider@1.5.4
-
-# For npm
-npm install @openrouter/ai-sdk-provider@1.5.4
-
-# For yarn
-yarn add @openrouter/ai-sdk-provider@1.5.4
+yarn add @osm/ai-sdk-provider
 ```
 
 ## Provider Instance
 
-You can import the default provider instance `openrouter` from `@openrouter/ai-sdk-provider`:
+You can import the default provider instance `osm` from `@osm/ai-sdk-provider`:
 
 ```ts
-import { openrouter } from '@openrouter/ai-sdk-provider';
+import { osm } from '@osm/ai-sdk-provider';
+```
+
+Alternatively, create a new instance with `createOsm`:
+
+```ts
+import { createOsm } from '@osm/ai-sdk-provider';
+
+const osm = createOsm({
+  apiKey: process.env.OSM_API_KEY,
+  baseURL: 'https://api.osmapi.com/v1', // optional, defaults to this URL
+});
 ```
 
 ## Example
 
 ```ts
-import { openrouter } from '@openrouter/ai-sdk-provider';
+import { osm } from '@osm/ai-sdk-provider';
 import { generateText } from 'ai';
 
 const { text } = await generateText({
-  model: openrouter('openai/gpt-4o'),
+  model: osm('glm-5'),
   prompt: 'Write a vegetarian lasagna recipe for 4 people.',
 });
+```
+
+## Environment Variables
+
+Set the `OSM_API_KEY` environment variable with your API key:
+
+```bash
+export OSM_API_KEY=your_api_key_here
 ```
 
 ## Supported models

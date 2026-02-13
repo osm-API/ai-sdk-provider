@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { withUserAgentSuffix } from './with-user-agent-suffix';
 
 describe('withUserAgentSuffix', () => {
-  const SDK_SUFFIX = 'ai-sdk/openrouter/1.0.0';
+  const SDK_SUFFIX = 'ai-sdk/osm/1.0.0';
 
   describe('when no user-agent header is provided', () => {
     it('should add SDK identifier as the user-agent', () => {

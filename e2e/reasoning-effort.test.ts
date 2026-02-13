@@ -1,6 +1,6 @@
 import { generateText } from 'ai';
 import { describe, expect, it, vi } from 'vitest';
-import { createOpenRouter } from '@/src';
+import { createOsm } from '@/src';
 
 vi.setConfig({
   testTimeout: 60_000,
@@ -8,8 +8,8 @@ vi.setConfig({
 
 describe('Reasoning effort parameter', () => {
   it('should work with reasoning.effort set to low', async () => {
-    const openrouter = createOpenRouter({
-      apiKey: process.env.OPENROUTER_API_KEY,
+    const openrouter = createOsm({
+      apiKey: process.env.OSM_API_KEY,
       baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
     });
 
@@ -51,8 +51,8 @@ describe('Reasoning effort parameter', () => {
   });
 
   it('should work with reasoning.effort set to medium', async () => {
-    const openrouter = createOpenRouter({
-      apiKey: process.env.OPENROUTER_API_KEY,
+    const openrouter = createOsm({
+      apiKey: process.env.OSM_API_KEY,
       baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
     });
 
@@ -94,8 +94,8 @@ describe('Reasoning effort parameter', () => {
   });
 
   it('should work with reasoning.effort set to high', async () => {
-    const openrouter = createOpenRouter({
-      apiKey: process.env.OPENROUTER_API_KEY,
+    const openrouter = createOsm({
+      apiKey: process.env.OSM_API_KEY,
       baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
     });
 

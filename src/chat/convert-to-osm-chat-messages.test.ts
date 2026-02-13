@@ -1,10 +1,10 @@
 import { ReasoningDetailType } from '../schemas/reasoning-details';
-import { convertToOpenRouterChatMessages } from './convert-to-openrouter-chat-messages';
+import { convertToOsmChatMessages } from './convert-to-osm-chat-messages';
 import { MIME_TO_FORMAT } from './file-url-utils';
 
 describe('user messages', () => {
   it('should convert image Uint8Array', async () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [
@@ -33,7 +33,7 @@ describe('user messages', () => {
   });
 
   it('should convert image urls', async () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [
@@ -62,7 +62,7 @@ describe('user messages', () => {
   });
 
   it('should convert messages with image base64', async () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [
@@ -91,7 +91,7 @@ describe('user messages', () => {
   });
 
   it('should convert messages with only a text part to a string content', async () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [{ type: 'text', text: 'Hello' }],
@@ -107,7 +107,7 @@ describe('user messages', () => {
       format,
     ]),
   )('should convert %s to input_audio with %s format', (mediaType, expectedFormat) => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [
@@ -137,7 +137,7 @@ describe('user messages', () => {
   });
 
   it('should convert audio base64 data URL to input_audio', async () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [
@@ -167,7 +167,7 @@ describe('user messages', () => {
   });
 
   it('should convert raw audio base64 string to input_audio', async () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [
@@ -198,7 +198,7 @@ describe('user messages', () => {
 
   it('should throw error for audio URLs', async () => {
     expect(() =>
-      convertToOpenRouterChatMessages([
+      convertToOsmChatMessages([
         {
           role: 'user',
           content: [
@@ -215,7 +215,7 @@ describe('user messages', () => {
 
   it('should throw error for unsupported audio formats', async () => {
     expect(() =>
-      convertToOpenRouterChatMessages([
+      convertToOsmChatMessages([
         {
           role: 'user',
           content: [
@@ -233,7 +233,7 @@ describe('user messages', () => {
 
 describe('cache control', () => {
   it('should convert system message to array content with block-level cache control', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'system',
         content: 'System prompt',
@@ -260,7 +260,7 @@ describe('cache control', () => {
   });
 
   it('should convert system message to array content even without cache control', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'system',
         content: 'System prompt',
@@ -280,13 +280,13 @@ describe('cache control', () => {
     ]);
   });
 
-  it('should convert system message to array content with openrouter namespace cache control', () => {
-    const result = convertToOpenRouterChatMessages([
+  it('should convert system message to array content with osm namespace cache control', () => {
+    const result = convertToOsmChatMessages([
       {
         role: 'system',
         content: 'System prompt',
         providerOptions: {
-          openrouter: {
+          osm: {
             cacheControl: { type: 'ephemeral' },
           },
         },
@@ -308,7 +308,7 @@ describe('cache control', () => {
   });
 
   it('should pass cache control from user message provider metadata (single text part)', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [{ type: 'text', text: 'Hello' }],
@@ -335,7 +335,7 @@ describe('cache control', () => {
   });
 
   it('should pass cache control from content part provider metadata (single text part)', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [
@@ -367,7 +367,7 @@ describe('cache control', () => {
   });
 
   it('should pass cache control from user message provider metadata (multiple parts)', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [
@@ -405,7 +405,7 @@ describe('cache control', () => {
   });
 
   it('should pass cache control from user message provider metadata without cache control (single text part)', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [{ type: 'text', text: 'Hello' }],
@@ -421,7 +421,7 @@ describe('cache control', () => {
   });
 
   it('should pass cache control to multiple image parts from user message provider metadata', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [
@@ -468,7 +468,7 @@ describe('cache control', () => {
   });
 
   it('should pass cache control to file parts from user message provider metadata', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [
@@ -478,7 +478,7 @@ describe('cache control', () => {
             data: 'ZmlsZSBjb250ZW50',
             mediaType: 'text/plain',
             providerOptions: {
-              openrouter: {
+              osm: {
                 filename: 'file.txt',
               },
             },
@@ -514,7 +514,7 @@ describe('cache control', () => {
   });
 
   it('should handle mixed part-specific and message-level cache control for multiple parts', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [
@@ -538,7 +538,7 @@ describe('cache control', () => {
             data: 'ZmlsZSBjb250ZW50',
             mediaType: 'text/plain',
             providerOptions: {
-              openrouter: {
+              osm: {
                 filename: 'file.txt',
               },
             },
@@ -580,7 +580,7 @@ describe('cache control', () => {
   });
 
   it('should only apply message-level cache control to last text part (multiple text parts)', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [
@@ -619,7 +619,7 @@ describe('cache control', () => {
   });
 
   it('should pass cache control from individual content part provider metadata', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [
@@ -660,7 +660,7 @@ describe('cache control', () => {
   });
 
   it('should pass cache control from assistant message provider metadata', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [{ type: 'text', text: 'Assistant response' }],
@@ -682,7 +682,7 @@ describe('cache control', () => {
   });
 
   it('should pass cache control from tool message provider metadata', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'tool',
         content: [
@@ -715,7 +715,7 @@ describe('cache control', () => {
   });
 
   it('should support the alias cache_control field', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'system',
         content: 'System prompt',
@@ -742,7 +742,7 @@ describe('cache control', () => {
   });
 
   it('should support cache control on last message in content array', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'system',
         content: 'System prompt',
@@ -787,7 +787,7 @@ describe('cache control', () => {
   });
 
   it('should pass cache control to audio input parts from user message provider metadata', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'user',
         content: [
@@ -830,7 +830,7 @@ describe('cache control', () => {
 
 describe('reasoning_details accumulation', () => {
   it('should accumulate reasoning_details from reasoning part providerOptions', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [
@@ -838,7 +838,7 @@ describe('reasoning_details accumulation', () => {
             type: 'reasoning',
             text: 'First reasoning chunk',
             providerOptions: {
-              openrouter: {
+              osm: {
                 reasoning_details: [
                   {
                     type: ReasoningDetailType.Text,
@@ -852,7 +852,7 @@ describe('reasoning_details accumulation', () => {
             type: 'reasoning',
             text: 'Second reasoning chunk',
             providerOptions: {
-              openrouter: {
+              osm: {
                 reasoning_details: [
                   {
                     type: ReasoningDetailType.Text,
@@ -868,7 +868,7 @@ describe('reasoning_details accumulation', () => {
           },
         ],
         providerOptions: {
-          openrouter: {
+          osm: {
             reasoning_details: [
               {
                 type: ReasoningDetailType.Text,
@@ -904,7 +904,7 @@ describe('reasoning_details accumulation', () => {
   });
 
   it('should use preserved reasoning_details from message-level providerOptions when available', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [
@@ -919,7 +919,7 @@ describe('reasoning_details accumulation', () => {
           },
         ],
         providerOptions: {
-          openrouter: {
+          osm: {
             reasoning_details: [
               {
                 type: ReasoningDetailType.Text,
@@ -955,7 +955,7 @@ describe('reasoning_details accumulation', () => {
   });
 
   it('should not include reasoning_details when not present in providerOptions', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [
@@ -985,7 +985,7 @@ describe('reasoning_details accumulation', () => {
   });
 
   it('should handle mixed reasoning parts with and without providerOptions', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [
@@ -993,7 +993,7 @@ describe('reasoning_details accumulation', () => {
             type: 'reasoning',
             text: 'First chunk',
             providerOptions: {
-              openrouter: {
+              osm: {
                 reasoning_details: [
                   {
                     type: ReasoningDetailType.Text,
@@ -1014,7 +1014,7 @@ describe('reasoning_details accumulation', () => {
           },
         ],
         providerOptions: {
-          openrouter: {
+          osm: {
             reasoning_details: [
               {
                 type: ReasoningDetailType.Text,
@@ -1044,7 +1044,7 @@ describe('reasoning_details accumulation', () => {
 
 describe('parallel tool calls reasoning_details deduplication', () => {
   it('should only use reasoning_details from first tool call (parallel tool calls)', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [
@@ -1054,7 +1054,7 @@ describe('parallel tool calls reasoning_details deduplication', () => {
             toolName: 'get_weather',
             input: { location: 'San Francisco' },
             providerOptions: {
-              openrouter: {
+              osm: {
                 reasoning_details: [
                   {
                     type: ReasoningDetailType.Text,
@@ -1074,7 +1074,7 @@ describe('parallel tool calls reasoning_details deduplication', () => {
             toolName: 'get_time',
             input: {},
             providerOptions: {
-              openrouter: {
+              osm: {
                 reasoning_details: [
                   {
                     type: ReasoningDetailType.Text,
@@ -1113,7 +1113,7 @@ describe('parallel tool calls reasoning_details deduplication', () => {
   });
 
   it('should collect reasoning_details from single tool call', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [
@@ -1123,7 +1123,7 @@ describe('parallel tool calls reasoning_details deduplication', () => {
             toolName: 'get_weather',
             input: { location: 'San Francisco' },
             providerOptions: {
-              openrouter: {
+              osm: {
                 reasoning_details: [
                   {
                     type: ReasoningDetailType.Text,
@@ -1149,7 +1149,7 @@ describe('parallel tool calls reasoning_details deduplication', () => {
   });
 
   it('should prefer message-level reasoning_details over tool call reasoning_details', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [
@@ -1159,7 +1159,7 @@ describe('parallel tool calls reasoning_details deduplication', () => {
             toolName: 'get_weather',
             input: { location: 'San Francisco' },
             providerOptions: {
-              openrouter: {
+              osm: {
                 reasoning_details: [
                   {
                     type: ReasoningDetailType.Text,
@@ -1171,7 +1171,7 @@ describe('parallel tool calls reasoning_details deduplication', () => {
           },
         ],
         providerOptions: {
-          openrouter: {
+          osm: {
             reasoning_details: [
               {
                 type: ReasoningDetailType.Text,
@@ -1203,7 +1203,7 @@ describe('parallel tool calls reasoning_details deduplication', () => {
   });
 
   it('should prefer tool call reasoning_details over reasoning part (tool calls have complete data)', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [
@@ -1211,7 +1211,7 @@ describe('parallel tool calls reasoning_details deduplication', () => {
             type: 'reasoning',
             text: 'Thinking about the request',
             providerOptions: {
-              openrouter: {
+              osm: {
                 reasoning_details: [
                   {
                     type: ReasoningDetailType.Text,
@@ -1227,7 +1227,7 @@ describe('parallel tool calls reasoning_details deduplication', () => {
             toolName: 'get_weather',
             input: { location: 'San Francisco' },
             providerOptions: {
-              openrouter: {
+              osm: {
                 reasoning_details: [
                   {
                     type: ReasoningDetailType.Text,
@@ -1262,7 +1262,7 @@ describe('parallel tool calls reasoning_details deduplication', () => {
   });
 
   it('should handle tool calls without reasoning_details', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [
@@ -1293,7 +1293,7 @@ describe('parallel tool calls reasoning_details deduplication', () => {
   });
 
   it('should fall back to reasoning part if no tool calls have reasoning_details', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [
@@ -1301,7 +1301,7 @@ describe('parallel tool calls reasoning_details deduplication', () => {
             type: 'reasoning',
             text: 'Thinking process',
             providerOptions: {
-              openrouter: {
+              osm: {
                 reasoning_details: [
                   {
                     type: ReasoningDetailType.Text,
@@ -1338,7 +1338,7 @@ describe('multi-turn reasoning_details deduplication (issue #254)', () => {
   it('should deduplicate reasoning_details with same ID across multiple assistant messages', () => {
     // This test reproduces the exact scenario from issue #254 where
     // gpt-5-codex generates the same reasoning ID across multiple turns
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [
@@ -1348,7 +1348,7 @@ describe('multi-turn reasoning_details deduplication (issue #254)', () => {
             toolName: 'get_weather',
             input: { location: 'San Francisco' },
             providerOptions: {
-              openrouter: {
+              osm: {
                 reasoning_details: [
                   {
                     type: ReasoningDetailType.Encrypted,
@@ -1381,7 +1381,7 @@ describe('multi-turn reasoning_details deduplication (issue #254)', () => {
             toolName: 'get_time',
             input: {},
             providerOptions: {
-              openrouter: {
+              osm: {
                 reasoning_details: [
                   {
                     type: ReasoningDetailType.Encrypted,
@@ -1417,7 +1417,7 @@ describe('multi-turn reasoning_details deduplication (issue #254)', () => {
 
   it('should preserve unique reasoning_details across multiple assistant messages', () => {
     // Gemini uses different IDs/data for each turn's thoughtSignature
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [
@@ -1427,7 +1427,7 @@ describe('multi-turn reasoning_details deduplication (issue #254)', () => {
             toolName: 'get_weather',
             input: { location: 'San Francisco' },
             providerOptions: {
-              openrouter: {
+              osm: {
                 reasoning_details: [
                   {
                     type: ReasoningDetailType.Encrypted,
@@ -1460,7 +1460,7 @@ describe('multi-turn reasoning_details deduplication (issue #254)', () => {
             toolName: 'get_time',
             input: {},
             providerOptions: {
-              openrouter: {
+              osm: {
                 reasoning_details: [
                   {
                     type: ReasoningDetailType.Encrypted,
@@ -1501,12 +1501,12 @@ describe('multi-turn reasoning_details deduplication (issue #254)', () => {
   });
 
   it('should deduplicate reasoning_details from message-level providerOptions', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [{ type: 'text', text: 'First response' }],
         providerOptions: {
-          openrouter: {
+          osm: {
             reasoning_details: [
               {
                 type: ReasoningDetailType.Summary,
@@ -1524,7 +1524,7 @@ describe('multi-turn reasoning_details deduplication (issue #254)', () => {
         role: 'assistant',
         content: [{ type: 'text', text: 'Second response' }],
         providerOptions: {
-          openrouter: {
+          osm: {
             reasoning_details: [
               {
                 type: ReasoningDetailType.Summary,
@@ -1557,12 +1557,12 @@ describe('multi-turn reasoning_details deduplication (issue #254)', () => {
   });
 
   it('should handle mixed reasoning_details types with some duplicates', () => {
-    const result = convertToOpenRouterChatMessages([
+    const result = convertToOsmChatMessages([
       {
         role: 'assistant',
         content: [{ type: 'text', text: 'First response' }],
         providerOptions: {
-          openrouter: {
+          osm: {
             reasoning_details: [
               {
                 type: ReasoningDetailType.Text,
@@ -1585,7 +1585,7 @@ describe('multi-turn reasoning_details deduplication (issue #254)', () => {
         role: 'assistant',
         content: [{ type: 'text', text: 'Second response' }],
         providerOptions: {
-          openrouter: {
+          osm: {
             reasoning_details: [
               {
                 type: ReasoningDetailType.Text,

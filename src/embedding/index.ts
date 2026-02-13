@@ -4,20 +4,20 @@ import type {
   SharedV3ProviderMetadata,
 } from '@ai-sdk/provider';
 import type {
-  OpenRouterEmbeddingModelId,
-  OpenRouterEmbeddingSettings,
-} from '../types/openrouter-embedding-settings';
+  OsmEmbeddingModelId,
+  OsmEmbeddingSettings,
+} from '../types/osm-embedding-settings';
 
 import {
   combineHeaders,
   createJsonResponseHandler,
   postJsonToApi,
 } from '@ai-sdk/provider-utils';
-import { openrouterFailedResponseHandler } from '../schemas/error-response';
-import { OpenRouterProviderMetadataSchema } from '../schemas/provider-metadata';
-import { OpenRouterEmbeddingResponseSchema } from './schemas';
+import { osmFailedResponseHandler } from '../schemas/error-response';
+import { osmProviderMetadataSchema } from '../schemas/provider-metadata';
+import { OsmEmbeddingResponseSchema } from './schemas';
 
-type OpenRouterEmbeddingConfig = {
+type OsmEmbeddingConfig = {
   provider: string;
   headers: () => Record<string, string | undefined>;
   url: (options: { modelId: string; path: string }) => string;
@@ -25,20 +25,20 @@ type OpenRouterEmbeddingConfig = {
   extraBody?: Record<string, unknown>;
 };
 
-export class OpenRouterEmbeddingModel implements EmbeddingModelV3 {
+export class OsmEmbeddingModel implements EmbeddingModelV3 {
   readonly specificationVersion = 'v3' as const;
-  readonly provider = 'openrouter';
-  readonly modelId: OpenRouterEmbeddingModelId;
-  readonly settings: OpenRouterEmbeddingSettings;
+  readonly provider = 'osm';
+  readonly modelId: OsmEmbeddingModelId;
+  readonly settings: OsmEmbeddingSettings;
   readonly maxEmbeddingsPerCall = undefined;
   readonly supportsParallelCalls = true;
 
-  private readonly config: OpenRouterEmbeddingConfig;
+  private readonly config: OsmEmbeddingConfig;
 
   constructor(
-    modelId: OpenRouterEmbeddingModelId,
-    settings: OpenRouterEmbeddingSettings,
-    config: OpenRouterEmbeddingConfig,
+    modelId: OsmEmbeddingModelId,
+    settings: OsmEmbeddingSettings,
+    config: OsmEmbeddingConfig,
   ) {
     this.modelId = modelId;
     this.settings = settings;
@@ -77,9 +77,9 @@ export class OpenRouterEmbeddingModel implements EmbeddingModelV3 {
       }),
       headers: combineHeaders(this.config.headers(), headers),
       body: args,
-      failedResponseHandler: openrouterFailedResponseHandler,
+      failedResponseHandler: osmFailedResponseHandler,
       successfulResponseHandler: createJsonResponseHandler(
-        OpenRouterEmbeddingResponseSchema,
+        OsmEmbeddingResponseSchema,
       ),
       abortSignal,
       fetch: this.config.fetch,
@@ -91,7 +91,7 @@ export class OpenRouterEmbeddingModel implements EmbeddingModelV3 {
         ? { tokens: responseValue.usage.prompt_tokens }
         : undefined,
       providerMetadata: {
-        openrouter: OpenRouterProviderMetadataSchema.parse({
+        osm: osmProviderMetadataSchema.parse({
           provider: responseValue.provider ?? '',
           usage: {
             promptTokens: responseValue.usage?.prompt_tokens ?? 0,

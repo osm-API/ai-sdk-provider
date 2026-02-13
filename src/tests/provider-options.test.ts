@@ -12,7 +12,7 @@ import {
   it,
   vi,
 } from 'vitest';
-import { createOpenRouter } from '../provider';
+import { createOsm } from '../provider';
 
 // Add type assertions for the mocked classes
 const TEST_MESSAGES: ModelMessage[] = [
@@ -21,7 +21,7 @@ const TEST_MESSAGES: ModelMessage[] = [
 
 describe('providerOptions', () => {
   const server = createTestServer({
-    'https://openrouter.ai/api/v1/chat/completions': {
+    'https://osm.ai/api/v1/chat/completions': {
       response: {
         type: 'stream-chunks',
         chunks: [],
@@ -37,17 +37,17 @@ describe('providerOptions', () => {
     vi.clearAllMocks();
   });
 
-  it('should set providerOptions openrouter to extra body', async () => {
-    const openrouter = createOpenRouter({
+  it('should set providerOptions osm to extra body', async () => {
+    const osm = createOsm({
       apiKey: 'test',
     });
-    const model = openrouter('anthropic/claude-3.7-sonnet');
+    const model = osm('anthropic/claude-3.7-sonnet');
 
     await streamText({
       model: model,
       messages: TEST_MESSAGES,
       providerOptions: {
-        openrouter: {
+        osm: {
           reasoning: {
             max_tokens: 1000,
           },
@@ -71,16 +71,16 @@ describe('providerOptions', () => {
   });
 
   it('should pass effort xhigh to API body', async () => {
-    const openrouter = createOpenRouter({
+    const osm = createOsm({
       apiKey: 'test',
     });
-    const model = openrouter('openai/o3');
+    const model = osm('openai/o3');
 
     await streamText({
       model: model,
       messages: TEST_MESSAGES,
       providerOptions: {
-        openrouter: {
+        osm: {
           reasoning: {
             effort: 'xhigh',
           },
@@ -104,16 +104,16 @@ describe('providerOptions', () => {
   });
 
   it('should pass effort minimal to API body', async () => {
-    const openrouter = createOpenRouter({
+    const osm = createOsm({
       apiKey: 'test',
     });
-    const model = openrouter('openai/o3');
+    const model = osm('openai/o3');
 
     await streamText({
       model: model,
       messages: TEST_MESSAGES,
       providerOptions: {
-        openrouter: {
+        osm: {
           reasoning: {
             effort: 'minimal',
           },
@@ -137,16 +137,16 @@ describe('providerOptions', () => {
   });
 
   it('should pass effort none to API body', async () => {
-    const openrouter = createOpenRouter({
+    const osm = createOsm({
       apiKey: 'test',
     });
-    const model = openrouter('openai/o3');
+    const model = osm('openai/o3');
 
     await streamText({
       model: model,
       messages: TEST_MESSAGES,
       providerOptions: {
-        openrouter: {
+        osm: {
           reasoning: {
             effort: 'none',
           },

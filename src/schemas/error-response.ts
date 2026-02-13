@@ -1,9 +1,9 @@
-import type { ChatErrorError } from '../types/openrouter-api-types';
+import type { ChatErrorError } from '../types/osm-api-types';
 
 import { createJsonErrorResponseHandler } from '@ai-sdk/provider-utils';
 import { z } from 'zod/v4';
 
-export const OpenRouterErrorResponseSchema = z
+export const osmErrorResponseSchema = z
   .object({
     error: z
       .object({
@@ -22,9 +22,9 @@ export const OpenRouterErrorResponseSchema = z
   })
   .passthrough();
 
-export type OpenRouterErrorData = z.infer<typeof OpenRouterErrorResponseSchema>;
+export type osmErrorData = z.infer<typeof osmErrorResponseSchema>;
 
-export const openrouterFailedResponseHandler = createJsonErrorResponseHandler({
-  errorSchema: OpenRouterErrorResponseSchema,
-  errorToMessage: (data: OpenRouterErrorData) => data.error.message,
+export const osmFailedResponseHandler = createJsonErrorResponseHandler({
+  errorSchema: osmErrorResponseSchema,
+  errorToMessage: (data: osmErrorData) => data.error.message,
 });

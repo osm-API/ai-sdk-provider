@@ -2,19 +2,19 @@ import type { LanguageModelV3Prompt } from '@ai-sdk/provider';
 
 import { createTestServer } from '@ai-sdk/test-server';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
-import { createOpenRouter } from '../provider';
+import { createOsm } from '../provider';
 
 const TEST_PROMPT: LanguageModelV3Prompt = [
   { role: 'user', content: [{ type: 'text', text: 'Hello' }] },
 ];
 
-const provider = createOpenRouter({
-  baseURL: 'https://test.openrouter.ai/api/v1',
+const provider = createOsm({
+  baseURL: 'https://test.osm.ai/api/v1',
   apiKey: 'test-api-key',
 });
 
 const server = createTestServer({
-  'https://test.openrouter.ai/api/v1/chat/completions': {},
+  'https://test.osm.ai/api/v1/chat/completions': {},
 });
 
 beforeAll(() => server.server.start());
@@ -24,11 +24,9 @@ afterAll(() => server.server.stop());
 describe('Large PDF Response Handling', () => {
   describe('doGenerate', () => {
     it('should handle HTTP 200 responses with error payloads (500 internal errors)', async () => {
-      // This is the actual response OpenRouter returns for large PDF failures
+      // This is the actual response Osm returns for large PDF failures
       // HTTP 200 status but contains error object instead of choices
-      server.urls[
-        'https://test.openrouter.ai/api/v1/chat/completions'
-      ]!.response = {
+      server.urls['https://test.osm.ai/api/v1/chat/completions']!.response = {
         type: 'json-value',
         body: {
           error: {
@@ -50,9 +48,7 @@ describe('Large PDF Response Handling', () => {
 
     it('should parse successful large PDF responses with file annotations', async () => {
       // Successful response with file annotations from FileParserPlugin
-      server.urls[
-        'https://test.openrouter.ai/api/v1/chat/completions'
-      ]!.response = {
+      server.urls['https://test.osm.ai/api/v1/chat/completions']!.response = {
         type: 'json-value',
         body: {
           id: 'gen-123',

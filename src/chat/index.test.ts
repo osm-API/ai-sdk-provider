@@ -9,7 +9,7 @@ import type { ReasoningDetailUnion } from '../schemas/reasoning-details';
 import { convertReadableStreamToArray } from '@ai-sdk/provider-utils/test';
 import { createTestServer } from '@ai-sdk/test-server';
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
-import { createOpenRouter } from '../provider';
+import { createOsm } from '../provider';
 import { ReasoningDetailType } from '../schemas/reasoning-details';
 
 vi.mock('@/src/version', () => ({
@@ -119,7 +119,7 @@ const TEST_IMAGE_URL = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACA
 
 const TEST_IMAGE_BASE64 = TEST_IMAGE_URL.split(',')[1]!;
 
-const provider = createOpenRouter({
+const provider = createOsm({
   apiKey: 'test-api-key',
   compatibility: 'strict',
 });
@@ -155,7 +155,7 @@ function isTextDeltaPart(part: LanguageModelV3StreamPart): part is Extract<
 
 describe('doGenerate', () => {
   const server = createTestServer({
-    'https://openrouter.ai/api/v1/chat/completions': {
+    'https://osm.ai/api/v1/chat/completions': {
       response: { type: 'json-value', body: {} },
     },
   });
@@ -203,7 +203,7 @@ describe('doGenerate', () => {
     } | null;
     finish_reason?: string;
   } = {}) {
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'json-value',
       body: {
         id: 'chatcmpl-95ZTZkhr0mHNKqerQfiwkuox3PHAd',
@@ -363,7 +363,7 @@ describe('doGenerate', () => {
         type: 'reasoning',
         text: 'Let me analyze this request...',
         providerMetadata: {
-          openrouter: {
+          osm: {
             reasoning_details: [
               {
                 type: 'reasoning.text',
@@ -377,7 +377,7 @@ describe('doGenerate', () => {
         type: 'reasoning',
         text: 'The user wants a greeting response.',
         providerMetadata: {
-          openrouter: {
+          osm: {
             reasoning_details: [
               {
                 type: 'reasoning.summary',
@@ -414,7 +414,7 @@ describe('doGenerate', () => {
         type: 'reasoning',
         text: '[REDACTED]',
         providerMetadata: {
-          openrouter: {
+          osm: {
             reasoning_details: [
               {
                 type: 'reasoning.encrypted',
@@ -456,7 +456,7 @@ describe('doGenerate', () => {
         type: 'reasoning',
         text: 'Processing from reasoning_details...',
         providerMetadata: {
-          openrouter: {
+          osm: {
             reasoning_details: [
               {
                 type: 'reasoning.text',
@@ -470,7 +470,7 @@ describe('doGenerate', () => {
         type: 'reasoning',
         text: 'Summary from reasoning_details',
         providerMetadata: {
-          openrouter: {
+          osm: {
             reasoning_details: [
               {
                 type: 'reasoning.summary',
@@ -675,7 +675,7 @@ describe('doGenerate', () => {
   it('should pass headers', async () => {
     prepareJsonResponse({ content: '' });
 
-    const provider = createOpenRouter({
+    const provider = createOsm({
       apiKey: 'test-api-key',
       headers: {
         'Custom-Provider-Header': 'provider-header-value',
@@ -697,7 +697,7 @@ describe('doGenerate', () => {
       'custom-provider-header': 'provider-header-value',
       'custom-request-header': 'request-header-value',
     });
-    expect(call.requestUserAgent).toContain('ai-sdk/openrouter/0.0.0-test');
+    expect(call.requestUserAgent).toContain('ai-sdk/osm/0.0.0-test');
   });
 
   it('should pass responseFormat for JSON schema structured outputs', async () => {
@@ -821,7 +821,7 @@ describe('doGenerate', () => {
   it('should pass auto-router plugin with allowed_models in request payload', async () => {
     prepareJsonResponse({ content: 'Hello from auto-selected model' });
 
-    const autoModel = provider.chat('openrouter/auto', {
+    const autoModel = provider.chat('osm/auto', {
       plugins: [
         {
           id: 'auto-router',
@@ -835,7 +835,7 @@ describe('doGenerate', () => {
     });
 
     expect(await server.calls[0]!.requestBodyJson).toStrictEqual({
-      model: 'openrouter/auto',
+      model: 'osm/auto',
       messages: [{ role: 'user', content: 'Hello' }],
       plugins: [
         {
@@ -849,7 +849,7 @@ describe('doGenerate', () => {
   it('should pass auto-router plugin without allowed_models in request payload', async () => {
     prepareJsonResponse({ content: 'Hello from auto-selected model' });
 
-    const autoModel = provider.chat('openrouter/auto', {
+    const autoModel = provider.chat('osm/auto', {
       plugins: [{ id: 'auto-router' }],
     });
 
@@ -858,7 +858,7 @@ describe('doGenerate', () => {
     });
 
     expect(await server.calls[0]!.requestBodyJson).toStrictEqual({
-      model: 'openrouter/auto',
+      model: 'osm/auto',
       messages: [{ role: 'user', content: 'Hello' }],
       plugins: [{ id: 'auto-router' }],
     });
@@ -867,7 +867,7 @@ describe('doGenerate', () => {
   it('should pass auto-router plugin combined with other plugins', async () => {
     prepareJsonResponse({ content: 'Hello from auto-selected model' });
 
-    const autoModel = provider.chat('openrouter/auto', {
+    const autoModel = provider.chat('osm/auto', {
       plugins: [
         { id: 'auto-router', allowed_models: ['anthropic/*'] },
         { id: 'web' },
@@ -879,7 +879,7 @@ describe('doGenerate', () => {
     });
 
     expect(await server.calls[0]!.requestBodyJson).toStrictEqual({
-      model: 'openrouter/auto',
+      model: 'osm/auto',
       messages: [{ role: 'user', content: 'Hello' }],
       plugins: [
         { id: 'auto-router', allowed_models: ['anthropic/*'] },
@@ -916,7 +916,7 @@ describe('doGenerate', () => {
 
 describe('doStream', () => {
   const server = createTestServer({
-    'https://openrouter.ai/api/v1/chat/completions': {
+    'https://osm.ai/api/v1/chat/completions': {
       response: { type: 'json-value', body: {} },
     },
   });
@@ -962,7 +962,7 @@ describe('doStream', () => {
     } | null;
     finish_reason?: string;
   }) {
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         `data: {"id":"chatcmpl-96aZqmeDpA9IPD6tACY8djkMsJCMP","object":"chat.completion.chunk","created":1702657020,"model":"gpt-3.5-turbo-0613",` +
@@ -1061,7 +1061,7 @@ describe('doStream', () => {
         finishReason: { unified: 'stop', raw: 'stop' },
 
         providerMetadata: {
-          openrouter: {
+          osm: {
             usage: {
               completionTokens: 227,
               promptTokens: 17,
@@ -1117,15 +1117,15 @@ describe('doStream', () => {
       ): chunk is Extract<LanguageModelV3StreamPart, { type: 'finish' }> =>
         chunk.type === 'finish',
     );
-    const openrouterUsage = (
-      finishChunk?.providerMetadata?.openrouter as {
+    const osmUsage = (
+      finishChunk?.providerMetadata?.osm as {
         usage?: {
           cost?: number;
           costDetails?: { upstreamInferenceCost: number };
         };
       }
     )?.usage;
-    expect(openrouterUsage?.costDetails).toStrictEqual({
+    expect(osmUsage?.costDetails).toStrictEqual({
       upstreamInferenceCost: 0.0036,
     });
   });
@@ -1157,24 +1157,24 @@ describe('doStream', () => {
       ): chunk is Extract<LanguageModelV3StreamPart, { type: 'finish' }> =>
         chunk.type === 'finish',
     );
-    const openrouterUsage = (
-      finishChunk?.providerMetadata?.openrouter as {
+    const osmUsage = (
+      finishChunk?.providerMetadata?.osm as {
         usage?: {
           cost?: number;
           costDetails?: { upstreamInferenceCost: number };
         };
       }
     )?.usage;
-    expect(openrouterUsage?.costDetails).toStrictEqual({
+    expect(osmUsage?.costDetails).toStrictEqual({
       upstreamInferenceCost: 0.0036,
     });
-    expect(openrouterUsage?.cost).toBe(0.0042);
+    expect(osmUsage?.cost).toBe(0.0042);
   });
 
   it('should prioritize reasoning_details over reasoning when both are present in streaming', async () => {
     // This test verifies that when the API returns both 'reasoning' and 'reasoning_details' fields,
     // we prioritize reasoning_details and ignore the reasoning field to avoid duplicates.
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         // First chunk: both reasoning and reasoning_details with different content
@@ -1251,7 +1251,7 @@ describe('doStream', () => {
 
     // First delta should have reasoning_details from first chunk
     expect(reasoningDeltaElements[0]?.providerMetadata).toEqual({
-      openrouter: {
+      osm: {
         reasoning_details: [
           {
             type: ReasoningDetailType.Text,
@@ -1263,7 +1263,7 @@ describe('doStream', () => {
 
     // Second and third deltas should have reasoning_details from second chunk
     expect(reasoningDeltaElements[1]?.providerMetadata).toEqual({
-      openrouter: {
+      osm: {
         reasoning_details: [
           {
             type: ReasoningDetailType.Summary,
@@ -1278,7 +1278,7 @@ describe('doStream', () => {
     });
 
     expect(reasoningDeltaElements[2]?.providerMetadata).toEqual({
-      openrouter: {
+      osm: {
         reasoning_details: [
           {
             type: ReasoningDetailType.Summary,
@@ -1299,7 +1299,7 @@ describe('doStream', () => {
   it('should emit reasoning_details in providerMetadata for all reasoning delta chunks', async () => {
     // This test verifies that reasoning_details are included in providerMetadata
     // for all reasoning-delta chunks, enabling users to accumulate them for multi-turn conversations
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         // First chunk: reasoning_details with Text type
@@ -1339,7 +1339,7 @@ describe('doStream', () => {
 
     // Verify each delta has the correct reasoning_details in providerMetadata
     expect(reasoningDeltaElements[0]?.providerMetadata).toEqual({
-      openrouter: {
+      osm: {
         reasoning_details: [
           {
             type: ReasoningDetailType.Text,
@@ -1350,7 +1350,7 @@ describe('doStream', () => {
     });
 
     expect(reasoningDeltaElements[1]?.providerMetadata).toEqual({
-      openrouter: {
+      osm: {
         reasoning_details: [
           {
             type: ReasoningDetailType.Summary,
@@ -1361,7 +1361,7 @@ describe('doStream', () => {
     });
 
     expect(reasoningDeltaElements[2]?.providerMetadata).toEqual({
-      openrouter: {
+      osm: {
         reasoning_details: [
           {
             type: ReasoningDetailType.Encrypted,
@@ -1375,7 +1375,7 @@ describe('doStream', () => {
     const reasoningStart = elements.find(isReasoningStartPart);
 
     expect(reasoningStart?.providerMetadata).toEqual({
-      openrouter: {
+      osm: {
         reasoning_details: [
           {
             type: ReasoningDetailType.Text,
@@ -1389,7 +1389,7 @@ describe('doStream', () => {
   it('should maintain correct reasoning order when content comes after reasoning (issue #7824)', async () => {
     // This test reproduces the issue where reasoning appears first but then gets "pushed down"
     // by content that comes later in the stream
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         // First chunk: Start with reasoning
@@ -1468,7 +1468,7 @@ describe('doStream', () => {
   });
 
   it('should stream tool deltas', async () => {
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         `data: {"id":"chatcmpl-96aZqmeDpA9IPD6tACY8djkMsJCMP","object":"chat.completion.chunk","created":1711357598,"model":"gpt-3.5-turbo-0125",` +
@@ -1632,7 +1632,7 @@ describe('doStream', () => {
         toolName: 'test-tool',
         input: '{"value":"Sparkle Day"}',
         providerMetadata: {
-          openrouter: {
+          osm: {
             reasoning_details: [],
           },
         },
@@ -1657,7 +1657,7 @@ describe('doStream', () => {
         type: 'finish',
         finishReason: { unified: 'tool-calls', raw: 'tool_calls' },
         providerMetadata: {
-          openrouter: {
+          osm: {
             usage: {
               completionTokens: 17,
               promptTokens: 53,
@@ -1688,7 +1688,7 @@ describe('doStream', () => {
   });
 
   it('should stream tool call that is sent in one chunk', async () => {
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         `data: {"id":"chatcmpl-96aZqmeDpA9IPD6tACY8djkMsJCMP","object":"chat.completion.chunk","created":1711357598,"model":"gpt-3.5-turbo-0125",` +
@@ -1750,7 +1750,7 @@ describe('doStream', () => {
         toolName: 'test-tool',
         input: '{"value":"Sparkle Day"}',
         providerMetadata: {
-          openrouter: {
+          osm: {
             reasoning_details: [],
           },
         },
@@ -1775,7 +1775,7 @@ describe('doStream', () => {
         type: 'finish',
         finishReason: { unified: 'tool-calls', raw: 'tool_calls' },
         providerMetadata: {
-          openrouter: {
+          osm: {
             usage: {
               completionTokens: 17,
               promptTokens: 53,
@@ -1806,7 +1806,7 @@ describe('doStream', () => {
   });
 
   it('should override finishReason to tool-calls in streaming when tool calls and encrypted reasoning are present', async () => {
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         // First chunk: reasoning_details with encrypted data
@@ -1869,7 +1869,7 @@ describe('doStream', () => {
   });
 
   it('should stream images', async () => {
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         `data: {"id":"chatcmpl-96aZqmeDpA9IPD6tACY8djkMsJCMP","object":"chat.completion.chunk","created":1711357598,"model":"gpt-3.5-turbo-0125",` +
@@ -1912,7 +1912,7 @@ describe('doStream', () => {
         type: 'finish',
         finishReason: { unified: 'stop', raw: 'stop' },
         providerMetadata: {
-          openrouter: {
+          osm: {
             usage: {
               completionTokens: 17,
               promptTokens: 53,
@@ -1943,11 +1943,11 @@ describe('doStream', () => {
   });
 
   it('should handle error stream parts', async () => {
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         `data: {"error":{"message": "The server had an error processing your request. Sorry about that! You can retry your request, or contact us through our ` +
-          `help center at help.openrouter.com if you keep seeing this error.","type":"server_error","param":null,"code":null}}\n\n`,
+          `help center at help.osm.com if you keep seeing this error.","type":"server_error","param":null,"code":null}}\n\n`,
         'data: [DONE]\n\n',
       ],
     };
@@ -1963,7 +1963,7 @@ describe('doStream', () => {
           message:
             'The server had an error processing your request. Sorry about that! ' +
             'You can retry your request, or contact us through our help center at ' +
-            'help.openrouter.com if you keep seeing this error.',
+            'help.osm.com if you keep seeing this error.',
           type: 'server_error',
           code: null,
           param: null,
@@ -1972,7 +1972,7 @@ describe('doStream', () => {
       {
         finishReason: { unified: 'error', raw: undefined },
         providerMetadata: {
-          openrouter: {
+          osm: {
             usage: {},
           },
         },
@@ -1996,7 +1996,7 @@ describe('doStream', () => {
   });
 
   it('should handle unparsable stream parts', async () => {
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: ['data: {unparsable}\n\n', 'data: [DONE]\n\n'],
     };
@@ -2014,7 +2014,7 @@ describe('doStream', () => {
 
       type: 'finish',
       providerMetadata: {
-        openrouter: {
+        osm: {
           usage: {},
         },
       },
@@ -2053,7 +2053,7 @@ describe('doStream', () => {
   it('should pass headers', async () => {
     prepareStreamResponse({ content: [] });
 
-    const provider = createOpenRouter({
+    const provider = createOsm({
       apiKey: 'test-api-key',
       headers: {
         'Custom-Provider-Header': 'provider-header-value',
@@ -2075,13 +2075,13 @@ describe('doStream', () => {
       'custom-provider-header': 'provider-header-value',
       'custom-request-header': 'request-header-value',
     });
-    expect(call.requestUserAgent).toContain('ai-sdk/openrouter/0.0.0-test');
+    expect(call.requestUserAgent).toContain('ai-sdk/osm/0.0.0-test');
   });
 
   it('should pass extra body', async () => {
     prepareStreamResponse({ content: [] });
 
-    const provider = createOpenRouter({
+    const provider = createOsm({
       apiKey: 'test-api-key',
       extraBody: {
         custom_field: 'custom_value',
@@ -2251,7 +2251,7 @@ describe('doStream', () => {
   it('should include file annotations in finish metadata when streamed', async () => {
     // This test verifies that file annotations from FileParserPlugin are accumulated
     // during streaming and included in the finish event's providerMetadata
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         // First chunk with role and content
@@ -2292,7 +2292,7 @@ describe('doStream', () => {
     expect(finishChunk).toBeDefined();
 
     // Verify file annotations are included in providerMetadata
-    const openrouterMetadata = finishChunk?.providerMetadata?.openrouter as {
+    const osmMetadata = finishChunk?.providerMetadata?.osm as {
       annotations?: Array<{
         type: 'file';
         file: {
@@ -2303,7 +2303,7 @@ describe('doStream', () => {
       }>;
     };
 
-    expect(openrouterMetadata?.annotations).toStrictEqual([
+    expect(osmMetadata?.annotations).toStrictEqual([
       {
         type: 'file',
         file: {
@@ -2320,7 +2320,7 @@ describe('doStream', () => {
 
   it('should accumulate multiple file annotations from stream', async () => {
     // This test verifies that multiple file annotations are accumulated correctly
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         // First chunk with content
@@ -2362,7 +2362,7 @@ describe('doStream', () => {
         chunk.type === 'finish',
     );
 
-    const openrouterMetadata = finishChunk?.providerMetadata?.openrouter as {
+    const osmMetadata = finishChunk?.providerMetadata?.osm as {
       annotations?: Array<{
         type: 'file';
         file: {
@@ -2374,9 +2374,9 @@ describe('doStream', () => {
     };
 
     // Both file annotations should be accumulated
-    expect(openrouterMetadata?.annotations).toHaveLength(2);
-    expect(openrouterMetadata?.annotations?.[0]?.file.hash).toBe('hash1');
-    expect(openrouterMetadata?.annotations?.[1]?.file.hash).toBe('hash2');
+    expect(osmMetadata?.annotations).toHaveLength(2);
+    expect(osmMetadata?.annotations?.[0]?.file.hash).toBe('hash1');
+    expect(osmMetadata?.annotations?.[1]?.file.hash).toBe('hash2');
   });
 
   it('should include accumulated reasoning_details with signature in reasoning-end providerMetadata for text-only responses', async () => {
@@ -2388,7 +2388,7 @@ describe('doStream', () => {
     // the accumulated reasoning_details (with signature) in the reasoning-end event.
     // Without this fix, the saved reasoning part has no signature, and the next turn
     // fails with "Invalid signature in thinking block".
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         // First chunk: reasoning starts, NO signature yet
@@ -2443,7 +2443,7 @@ describe('doStream', () => {
     expect(reasoningEnd?.providerMetadata).toBeDefined();
 
     const reasoningDetails = (
-      reasoningEnd?.providerMetadata?.openrouter as {
+      reasoningEnd?.providerMetadata?.osm as {
         reasoning_details: ReasoningDetailUnion[];
       }
     )?.reasoning_details;
@@ -2464,7 +2464,7 @@ describe('doStream', () => {
     );
 
     const finishReasoningDetails = (
-      finishEvent?.providerMetadata?.openrouter as {
+      finishEvent?.providerMetadata?.osm as {
         reasoning_details: ReasoningDetailUnion[];
       }
     )?.reasoning_details;
@@ -2480,7 +2480,7 @@ describe('doStream', () => {
 
 describe('debug settings', () => {
   const server = createTestServer({
-    'https://openrouter.ai/api/v1/chat/completions': {
+    'https://osm.ai/api/v1/chat/completions': {
       response: { type: 'json-value', body: {} },
     },
   });
@@ -2490,7 +2490,7 @@ describe('debug settings', () => {
   afterAll(() => server.server.stop());
 
   function prepareJsonResponse({ content = '' }: { content?: string } = {}) {
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'json-value',
       body: {
         id: 'chatcmpl-test',
@@ -2552,7 +2552,7 @@ describe('debug settings', () => {
 
 describe('web search citations', () => {
   const server = createTestServer({
-    'https://openrouter.ai/api/v1/chat/completions': {
+    'https://osm.ai/api/v1/chat/completions': {
       response: { type: 'json-value', body: {} },
     },
   });
@@ -2563,7 +2563,7 @@ describe('web search citations', () => {
 
   it('should handle url_citation with missing title field in non-streaming response', async () => {
     // Some upstream providers return url_citation without title field
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'json-value',
       body: {
         id: 'chatcmpl-web-search',
@@ -2618,7 +2618,7 @@ describe('web search citations', () => {
 
   it('should handle url_citation with missing start_index and end_index in non-streaming response', async () => {
     // Some providers may omit index fields
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'json-value',
       body: {
         id: 'chatcmpl-web-search',
@@ -2672,7 +2672,7 @@ describe('web search citations', () => {
 
   it('should handle url_citation with all optional fields missing in streaming response', async () => {
     // Test streaming with minimal url_citation (only url present)
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         `data: {"id":"chatcmpl-web-search","object":"chat.completion.chunk","created":1711357598,"model":"anthropic/claude-3.5-sonnet:online",` +
@@ -2708,7 +2708,7 @@ describe('web search citations', () => {
       url: 'https://example.com/page',
       title: '', // Should default to empty string
       providerMetadata: {
-        openrouter: {
+        osm: {
           content: '',
           startIndex: 0,
           endIndex: 0,
@@ -2719,7 +2719,7 @@ describe('web search citations', () => {
 
   it('should handle complete url_citation with all fields present', async () => {
     // Verify normal case still works
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'json-value',
       body: {
         id: 'chatcmpl-web-search',
@@ -2770,7 +2770,7 @@ describe('web search citations', () => {
       url: 'https://example.com/article',
       title: 'Complete Article',
       providerMetadata: {
-        openrouter: {
+        osm: {
           content: 'Article content here',
           startIndex: 5,
           endIndex: 25,
@@ -2780,7 +2780,7 @@ describe('web search citations', () => {
   });
 
   it('should default startIndex and endIndex to 0 when missing', async () => {
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'json-value',
       body: {
         id: 'chatcmpl-web-search',
@@ -2829,7 +2829,7 @@ describe('web search citations', () => {
       url: 'https://example.com/article',
       title: 'Article Without Indices',
       providerMetadata: {
-        openrouter: {
+        osm: {
           content: '',
           startIndex: 0,
           endIndex: 0,
@@ -2841,7 +2841,7 @@ describe('web search citations', () => {
 
 describe('includeRawChunks', () => {
   const server = createTestServer({
-    'https://openrouter.ai/api/v1/chat/completions': {
+    'https://osm.ai/api/v1/chat/completions': {
       response: { type: 'json-value', body: {} },
     },
   });
@@ -2851,7 +2851,7 @@ describe('includeRawChunks', () => {
   afterAll(() => server.server.stop());
 
   function prepareStreamResponse({ content }: { content: string[] }) {
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         `data: {"id":"chatcmpl-test","object":"chat.completion.chunk","created":1702657020,"model":"gpt-3.5-turbo-0613","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}\n\n`,
@@ -2937,7 +2937,7 @@ describe('includeRawChunks', () => {
   });
 
   it('should emit raw chunk even when parsing fails (for debugging malformed responses)', async () => {
-    server.urls['https://openrouter.ai/api/v1/chat/completions']!.response = {
+    server.urls['https://osm.ai/api/v1/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: ['data: {unparsable}\n\n', 'data: [DONE]\n\n'],
     };

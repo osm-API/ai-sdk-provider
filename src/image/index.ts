@@ -7,9 +7,9 @@ import type {
   SharedV3Warning,
 } from '@ai-sdk/provider';
 import type {
-  OpenRouterImageModelId,
-  OpenRouterImageSettings,
-} from '../types/openrouter-image-settings';
+  OsmImageModelId,
+  OsmImageSettings,
+} from '../types/osm-image-settings';
 
 import {
   NoContentGeneratedError,
@@ -21,10 +21,10 @@ import {
   postJsonToApi,
 } from '@ai-sdk/provider-utils';
 import { buildFileDataUrl, getBase64FromDataUrl } from '../chat/file-url-utils';
-import { openrouterFailedResponseHandler } from '../schemas/error-response';
-import { OpenRouterImageResponseSchema } from './schemas';
+import { osmFailedResponseHandler } from '../schemas/error-response';
+import { OsmImageResponseSchema } from './schemas';
 
-type OpenRouterImageConfig = {
+type OsmImageConfig = {
   provider: string;
   headers: () => Record<string, string | undefined>;
   url: (options: { modelId: string; path: string }) => string;
@@ -32,19 +32,19 @@ type OpenRouterImageConfig = {
   extraBody?: Record<string, unknown>;
 };
 
-export class OpenRouterImageModel implements ImageModelV3 {
+export class OsmImageModel implements ImageModelV3 {
   readonly specificationVersion = 'v3' as const;
-  readonly provider = 'openrouter';
-  readonly modelId: OpenRouterImageModelId;
-  readonly settings: OpenRouterImageSettings;
+  readonly provider = 'osm';
+  readonly modelId: OsmImageModelId;
+  readonly settings: OsmImageSettings;
   readonly maxImagesPerCall = 1;
 
-  private readonly config: OpenRouterImageConfig;
+  private readonly config: OsmImageConfig;
 
   constructor(
-    modelId: OpenRouterImageModelId,
-    settings: OpenRouterImageSettings,
-    config: OpenRouterImageConfig,
+    modelId: OsmImageModelId,
+    settings: OsmImageSettings,
+    config: OsmImageConfig,
   ) {
     this.modelId = modelId;
     this.settings = settings;
@@ -75,8 +75,7 @@ export class OpenRouterImageModel implements ImageModelV3 {
       providerOptions,
     } = options;
 
-    const openrouterOptions =
-      (providerOptions?.openrouter as Record<string, unknown>) || {};
+    const osmOptions = (providerOptions?.osm as Record<string, unknown>) || {};
 
     const warnings: SharedV3Warning[] = [];
 
@@ -90,7 +89,7 @@ export class OpenRouterImageModel implements ImageModelV3 {
       warnings.push({
         type: 'unsupported',
         feature: 'n > 1',
-        details: `OpenRouter image generation returns 1 image per call. Requested ${n} images.`,
+        details: `Osm image generation returns 1 image per call. Requested ${n} images.`,
       });
     }
 
@@ -99,7 +98,7 @@ export class OpenRouterImageModel implements ImageModelV3 {
         type: 'unsupported',
         feature: 'size',
         details:
-          'Use aspectRatio instead. Size parameter is not supported by OpenRouter image generation.',
+          'Use aspectRatio instead. Size parameter is not supported by Osm image generation.',
       });
     }
 
@@ -134,7 +133,7 @@ export class OpenRouterImageModel implements ImageModelV3 {
       }),
       ...this.config.extraBody,
       ...this.settings.extraBody,
-      ...openrouterOptions,
+      ...osmOptions,
     };
 
     const { value: responseValue, responseHeaders } = await postJsonToApi({
@@ -144,9 +143,9 @@ export class OpenRouterImageModel implements ImageModelV3 {
       }),
       headers: combineHeaders(this.config.headers(), headers),
       body,
-      failedResponseHandler: openrouterFailedResponseHandler,
+      failedResponseHandler: osmFailedResponseHandler,
       successfulResponseHandler: createJsonResponseHandler(
-        OpenRouterImageResponseSchema,
+        OsmImageResponseSchema,
       ),
       abortSignal,
       fetch: this.config.fetch,

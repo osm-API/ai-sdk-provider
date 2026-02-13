@@ -1,12 +1,12 @@
-import type { OpenRouterChatSettings } from '../types/openrouter-chat-settings';
+import type { OsmChatSettings } from '../types/osm-chat-settings';
 
 import { createTestServer } from '@ai-sdk/test-server';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
-import { OpenRouterChatLanguageModel } from '../chat';
+import { OsmChatLanguageModel } from '../chat';
 
-describe('OpenRouter Usage Accounting', () => {
+describe('Osm Usage Accounting', () => {
   const server = createTestServer({
-    'https://api.openrouter.ai/chat/completions': {
+    'https://api.osm.ai/chat/completions': {
       response: { type: 'json-value', body: {} },
     },
   });
@@ -48,7 +48,7 @@ describe('OpenRouter Usage Accounting', () => {
         : undefined,
     };
 
-    server.urls['https://api.openrouter.ai/chat/completions']!.response = {
+    server.urls['https://api.osm.ai/chat/completions']!.response = {
       type: 'json-value',
       body: response,
     };
@@ -58,13 +58,13 @@ describe('OpenRouter Usage Accounting', () => {
     prepareJsonResponse();
 
     // Create model with usage accounting enabled
-    const settings: OpenRouterChatSettings = {
+    const settings: OsmChatSettings = {
       usage: { include: true },
     };
 
-    const model = new OpenRouterChatLanguageModel('test-model', settings, {
-      provider: 'openrouter.chat',
-      url: () => 'https://api.openrouter.ai/chat/completions',
+    const model = new OsmChatLanguageModel('test-model', settings, {
+      provider: 'osm.chat',
+      url: () => 'https://api.osm.ai/chat/completions',
       headers: () => ({}),
       compatibility: 'strict',
       fetch: global.fetch,
@@ -95,13 +95,13 @@ describe('OpenRouter Usage Accounting', () => {
     prepareJsonResponse();
 
     // Create model with usage accounting enabled
-    const settings: OpenRouterChatSettings = {
+    const settings: OsmChatSettings = {
       usage: { include: true },
     };
 
-    const model = new OpenRouterChatLanguageModel('test-model', settings, {
-      provider: 'openrouter.chat',
-      url: () => 'https://api.openrouter.ai/chat/completions',
+    const model = new OsmChatLanguageModel('test-model', settings, {
+      provider: 'osm.chat',
+      url: () => 'https://api.osm.ai/chat/completions',
       headers: () => ({}),
       compatibility: 'strict',
       fetch: global.fetch,
@@ -122,12 +122,12 @@ describe('OpenRouter Usage Accounting', () => {
     expect(result.providerMetadata).toBeDefined();
     const providerData = result.providerMetadata;
 
-    // Check for OpenRouter usage data
-    expect(providerData?.openrouter).toBeDefined();
-    const openrouterData = providerData?.openrouter as Record<string, unknown>;
-    expect(openrouterData.usage).toBeDefined();
+    // Check for Osm usage data
+    expect(providerData?.osm).toBeDefined();
+    const osmData = providerData?.osm as Record<string, unknown>;
+    expect(osmData.usage).toBeDefined();
 
-    const usage = openrouterData.usage;
+    const usage = osmData.usage;
     expect(usage).toMatchObject({
       promptTokens: 10,
       completionTokens: 20,
@@ -149,13 +149,13 @@ describe('OpenRouter Usage Accounting', () => {
     prepareJsonResponse();
 
     // Create model with usage accounting disabled
-    const settings: OpenRouterChatSettings = {
+    const settings: OsmChatSettings = {
       // No usage property
     };
 
-    const model = new OpenRouterChatLanguageModel('test-model', settings, {
-      provider: 'openrouter.chat',
-      url: () => 'https://api.openrouter.ai/chat/completions',
+    const model = new OsmChatLanguageModel('test-model', settings, {
+      provider: 'osm.chat',
+      url: () => 'https://api.osm.ai/chat/completions',
       headers: () => ({}),
       compatibility: 'strict',
       fetch: global.fetch,
@@ -172,8 +172,8 @@ describe('OpenRouter Usage Accounting', () => {
       maxOutputTokens: 100,
     });
 
-    // Verify that OpenRouter metadata is not included
-    expect(result.providerMetadata?.openrouter?.usage).toStrictEqual({
+    // Verify that Osm metadata is not included
+    expect(result.providerMetadata?.osm?.usage).toStrictEqual({
       promptTokens: 10,
       completionTokens: 20,
       totalTokens: 30,
@@ -214,18 +214,18 @@ describe('OpenRouter Usage Accounting', () => {
       },
     };
 
-    server.urls['https://api.openrouter.ai/chat/completions']!.response = {
+    server.urls['https://api.osm.ai/chat/completions']!.response = {
       type: 'json-value',
       body: response,
     };
 
-    const settings: OpenRouterChatSettings = {
+    const settings: OsmChatSettings = {
       usage: { include: true },
     };
 
-    const model = new OpenRouterChatLanguageModel('test-model', settings, {
-      provider: 'openrouter.chat',
-      url: () => 'https://api.openrouter.ai/chat/completions',
+    const model = new OsmChatLanguageModel('test-model', settings, {
+      provider: 'osm.chat',
+      url: () => 'https://api.osm.ai/chat/completions',
       headers: () => ({}),
       compatibility: 'strict',
       fetch: global.fetch,
@@ -241,9 +241,8 @@ describe('OpenRouter Usage Accounting', () => {
       maxOutputTokens: 100,
     });
 
-    const usage = (
-      result.providerMetadata?.openrouter as Record<string, unknown>
-    )?.usage;
+    const usage = (result.providerMetadata?.osm as Record<string, unknown>)
+      ?.usage;
 
     // Should include basic token counts
     expect(usage).toMatchObject({
@@ -286,18 +285,18 @@ describe('OpenRouter Usage Accounting', () => {
       },
     };
 
-    server.urls['https://api.openrouter.ai/chat/completions']!.response = {
+    server.urls['https://api.osm.ai/chat/completions']!.response = {
       type: 'json-value',
       body: response,
     };
 
-    const settings: OpenRouterChatSettings = {
+    const settings: OsmChatSettings = {
       usage: { include: true },
     };
 
-    const model = new OpenRouterChatLanguageModel('test-model', settings, {
-      provider: 'openrouter.chat',
-      url: () => 'https://api.openrouter.ai/chat/completions',
+    const model = new OsmChatLanguageModel('test-model', settings, {
+      provider: 'osm.chat',
+      url: () => 'https://api.osm.ai/chat/completions',
       headers: () => ({}),
       compatibility: 'strict',
       fetch: global.fetch,
@@ -313,9 +312,8 @@ describe('OpenRouter Usage Accounting', () => {
       maxOutputTokens: 100,
     });
 
-    const usage = (
-      result.providerMetadata?.openrouter as Record<string, unknown>
-    )?.usage;
+    const usage = (result.providerMetadata?.osm as Record<string, unknown>)
+      ?.usage;
 
     // Should include promptTokensDetails since cached_tokens is present
     expect(usage).toHaveProperty('promptTokensDetails');
@@ -331,13 +329,13 @@ describe('OpenRouter Usage Accounting', () => {
   it('should include raw usage in usage.raw field with original snake_case format', async () => {
     prepareJsonResponse();
 
-    const settings: OpenRouterChatSettings = {
+    const settings: OsmChatSettings = {
       usage: { include: true },
     };
 
-    const model = new OpenRouterChatLanguageModel('test-model', settings, {
-      provider: 'openrouter.chat',
-      url: () => 'https://api.openrouter.ai/chat/completions',
+    const model = new OsmChatLanguageModel('test-model', settings, {
+      provider: 'osm.chat',
+      url: () => 'https://api.osm.ai/chat/completions',
       headers: () => ({}),
       compatibility: 'strict',
       fetch: global.fetch,
@@ -375,12 +373,12 @@ describe('OpenRouter Usage Accounting', () => {
   it('should compute inputTokens.noCache and outputTokens.text from detail fields', async () => {
     prepareJsonResponse();
 
-    const model = new OpenRouterChatLanguageModel(
+    const model = new OsmChatLanguageModel(
       'test-model',
       {},
       {
-        provider: 'openrouter.chat',
-        url: () => 'https://api.openrouter.ai/chat/completions',
+        provider: 'osm.chat',
+        url: () => 'https://api.osm.ai/chat/completions',
         headers: () => ({}),
         compatibility: 'strict',
         fetch: global.fetch,
@@ -410,7 +408,7 @@ describe('OpenRouter Usage Accounting', () => {
   });
 
   it('should set noCache equal to total and cacheRead to 0 when no detail fields present', async () => {
-    server.urls['https://api.openrouter.ai/chat/completions']!.response = {
+    server.urls['https://api.osm.ai/chat/completions']!.response = {
       type: 'json-value',
       body: {
         id: 'test-id',
@@ -430,12 +428,12 @@ describe('OpenRouter Usage Accounting', () => {
       },
     };
 
-    const model = new OpenRouterChatLanguageModel(
+    const model = new OsmChatLanguageModel(
       'test-model',
       {},
       {
-        provider: 'openrouter.chat',
-        url: () => 'https://api.openrouter.ai/chat/completions',
+        provider: 'osm.chat',
+        url: () => 'https://api.osm.ai/chat/completions',
         headers: () => ({}),
         compatibility: 'strict',
         fetch: global.fetch,
@@ -465,7 +463,7 @@ describe('OpenRouter Usage Accounting', () => {
   });
 
   it('should pass through cache_write_tokens when present in response', async () => {
-    server.urls['https://api.openrouter.ai/chat/completions']!.response = {
+    server.urls['https://api.osm.ai/chat/completions']!.response = {
       type: 'json-value',
       body: {
         id: 'test-id',
@@ -492,12 +490,12 @@ describe('OpenRouter Usage Accounting', () => {
       },
     };
 
-    const model = new OpenRouterChatLanguageModel(
+    const model = new OsmChatLanguageModel(
       'test-model',
       {},
       {
-        provider: 'openrouter.chat',
-        url: () => 'https://api.openrouter.ai/chat/completions',
+        provider: 'osm.chat',
+        url: () => 'https://api.osm.ai/chat/completions',
         headers: () => ({}),
         compatibility: 'strict',
         fetch: global.fetch,
@@ -529,11 +527,11 @@ describe('OpenRouter Usage Accounting', () => {
   it('should set usage.raw to undefined when no usage data in response', async () => {
     prepareJsonResponse(false);
 
-    const settings: OpenRouterChatSettings = {};
+    const settings: OsmChatSettings = {};
 
-    const model = new OpenRouterChatLanguageModel('test-model', settings, {
-      provider: 'openrouter.chat',
-      url: () => 'https://api.openrouter.ai/chat/completions',
+    const model = new OsmChatLanguageModel('test-model', settings, {
+      provider: 'osm.chat',
+      url: () => 'https://api.osm.ai/chat/completions',
       headers: () => ({}),
       compatibility: 'strict',
       fetch: global.fetch,

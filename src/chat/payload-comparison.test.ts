@@ -1,16 +1,16 @@
 import type { LanguageModelV3Prompt } from '@ai-sdk/provider';
-import type { OpenRouterChatCompletionsInput } from '../types/openrouter-chat-completions-input';
-import type { OpenRouterChatSettings } from '../types/openrouter-chat-settings';
+import type { OsmChatCompletionsInput } from '../types/osm-chat-completions-input';
+import type { OsmChatSettings } from '../types/osm-chat-settings';
 
 import { describe, expect, it, vi } from 'vitest';
-import { createOpenRouter } from '../provider';
+import { createOsm } from '../provider';
 
 describe('Payload Comparison - Large PDF', () => {
   it('should send payload matching fetch baseline for large PDFs', async () => {
     interface CapturedRequestBody {
       model: string;
-      messages: OpenRouterChatCompletionsInput;
-      plugins?: OpenRouterChatSettings['plugins'];
+      messages: OsmChatCompletionsInput;
+      plugins?: OsmChatSettings['plugins'];
       usage?: { include: boolean };
     }
 
@@ -52,7 +52,7 @@ describe('Payload Comparison - Large PDF', () => {
       );
     }) as typeof fetch;
 
-    const provider = createOpenRouter({
+    const provider = createOsm({
       apiKey: 'test-key',
       fetch: mockFetch,
     });
@@ -118,7 +118,7 @@ describe('Payload Comparison - Large PDF', () => {
     expect(filePart).toBeDefined();
 
     // CRITICAL ASSERTION: The file part should have a nested 'file' object with 'file_data'
-    // This is what the fetch example sends and what OpenRouter expects
+    // This is what the fetch example sends and what Osm expects
     expect(filePart).toMatchObject({
       type: 'file',
       file: {

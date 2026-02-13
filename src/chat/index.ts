@@ -15,12 +15,12 @@ import type {
 import type { ParseResult } from '@ai-sdk/provider-utils';
 import type { z } from 'zod/v4';
 import type { ReasoningDetailUnion } from '@/src/schemas/reasoning-details';
-import type { OpenRouterUsageAccounting } from '@/src/types/index';
+import type { OsmUsageAccounting } from '@/src/types/index';
 import type { FileAnnotation } from '../schemas/provider-metadata';
 import type {
-  OpenRouterChatModelId,
-  OpenRouterChatSettings,
-} from '../types/openrouter-chat-settings';
+  OsmChatModelId,
+  OsmChatSettings,
+} from '../types/osm-chat-settings';
 
 import {
   APICallError,
@@ -36,22 +36,22 @@ import {
   postJsonToApi,
 } from '@ai-sdk/provider-utils';
 import { ReasoningDetailType } from '@/src/schemas/reasoning-details';
-import { openrouterFailedResponseHandler } from '../schemas/error-response';
-import { OpenRouterProviderMetadataSchema } from '../schemas/provider-metadata';
+import { osmFailedResponseHandler } from '../schemas/error-response';
+import { osmProviderMetadataSchema } from '../schemas/provider-metadata';
 import { computeTokenUsage, emptyUsage } from '../utils/compute-token-usage';
 import {
   createFinishReason,
-  mapOpenRouterFinishReason,
+  mapOsmFinishReason,
 } from '../utils/map-finish-reason';
-import { convertToOpenRouterChatMessages } from './convert-to-openrouter-chat-messages';
+import { convertToOsmChatMessages } from './convert-to-osm-chat-messages';
 import { getBase64FromDataUrl, getMediaType } from './file-url-utils';
 import { getChatCompletionToolChoice } from './get-tool-choice';
 import {
-  OpenRouterNonStreamChatCompletionResponseSchema,
-  OpenRouterStreamChatCompletionChunkSchema,
+  OsmNonStreamChatCompletionResponseSchema,
+  OsmStreamChatCompletionChunkSchema,
 } from './schemas';
 
-type OpenRouterChatConfig = {
+type OsmChatConfig = {
   provider: string;
   compatibility: 'strict' | 'compatible';
   headers: () => Record<string, string | undefined>;
@@ -60,12 +60,12 @@ type OpenRouterChatConfig = {
   extraBody?: Record<string, unknown>;
 };
 
-export class OpenRouterChatLanguageModel implements LanguageModelV3 {
+export class OsmChatLanguageModel implements LanguageModelV3 {
   readonly specificationVersion = 'v3' as const;
-  readonly provider = 'openrouter';
+  readonly provider = 'osm';
   readonly defaultObjectGenerationMode = 'tool' as const;
 
-  readonly modelId: OpenRouterChatModelId;
+  readonly modelId: OsmChatModelId;
   readonly supportsImageUrls = true;
   readonly supportedUrls: Record<string, RegExp[]> = {
     'image/*': [
@@ -75,14 +75,14 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
     // 'text/*': [/^data:text\//, /^https?:\/\/.+$/],
     'application/*': [/^data:application\//, /^https?:\/\/.+$/],
   };
-  readonly settings: OpenRouterChatSettings;
+  readonly settings: OsmChatSettings;
 
-  private readonly config: OpenRouterChatConfig;
+  private readonly config: OsmChatConfig;
 
   constructor(
-    modelId: OpenRouterChatModelId,
-    settings: OpenRouterChatSettings,
-    config: OpenRouterChatConfig,
+    modelId: OsmChatModelId,
+    settings: OsmChatSettings,
+    config: OsmChatConfig,
   ) {
     this.modelId = modelId;
     this.settings = settings;
@@ -154,9 +154,9 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
       top_k: topK,
 
       // messages:
-      messages: convertToOpenRouterChatMessages(prompt),
+      messages: convertToOsmChatMessages(prompt),
 
-      // OpenRouter specific settings:
+      // Osm specific settings:
       include_reasoning: this.settings.includeReasoning,
       reasoning: this.settings.reasoning,
       usage: this.settings.usage,
@@ -208,10 +208,10 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
     usage: LanguageModelV3Usage;
     warnings: Array<SharedV3Warning>;
     providerMetadata?: {
-      openrouter: {
+      osm: {
         provider: string;
         reasoning_details?: ReasoningDetailUnion[];
-        usage: OpenRouterUsageAccounting;
+        usage: OsmUsageAccounting;
       };
     };
     request?: { body?: unknown };
@@ -221,11 +221,11 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
     };
   }> {
     const providerOptions = options.providerOptions || {};
-    const openrouterOptions = providerOptions.openrouter || {};
+    const osmOptions = providerOptions.osm || {};
 
     const args = {
       ...this.getArgs(options),
-      ...openrouterOptions,
+      ...osmOptions,
     };
 
     const { value: responseValue, responseHeaders } = await postJsonToApi({
@@ -235,9 +235,9 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
       }),
       headers: combineHeaders(this.config.headers(), options.headers),
       body: args,
-      failedResponseHandler: openrouterFailedResponseHandler,
+      failedResponseHandler: osmFailedResponseHandler,
       successfulResponseHandler: createJsonResponseHandler(
-        OpenRouterNonStreamChatCompletionResponseSchema,
+        OsmNonStreamChatCompletionResponseSchema,
       ),
       abortSignal: options.abortSignal,
       fetch: this.config.fetch,
@@ -290,7 +290,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
                       type: 'reasoning' as const,
                       text: detail.text,
                       providerMetadata: {
-                        openrouter: {
+                        osm: {
                           reasoning_details: [detail],
                         },
                       },
@@ -304,7 +304,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
                       type: 'reasoning' as const,
                       text: detail.summary,
                       providerMetadata: {
-                        openrouter: {
+                        osm: {
                           reasoning_details: [detail],
                         },
                       },
@@ -319,7 +319,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
                       type: 'reasoning' as const,
                       text: '[REDACTED]',
                       providerMetadata: {
-                        openrouter: {
+                        osm: {
                           reasoning_details: [detail],
                         },
                       },
@@ -367,7 +367,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
           input: toolCall.function.arguments ?? '{}',
           providerMetadata: !reasoningDetailsAttachedToToolCall
             ? {
-                openrouter: {
+                osm: {
                   reasoning_details: reasoningDetails,
                 },
               }
@@ -397,7 +397,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
             url: annotation.url_citation.url,
             title: annotation.url_citation.title ?? '',
             providerMetadata: {
-              openrouter: {
+              osm: {
                 content: annotation.url_citation.content ?? '',
                 startIndex: annotation.url_citation.start_index ?? 0,
                 endIndex: annotation.url_citation.end_index ?? 0,
@@ -435,7 +435,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
 
     const effectiveFinishReason = shouldOverrideFinishReason
       ? createFinishReason('tool-calls', choice.finish_reason ?? undefined)
-      : mapOpenRouterFinishReason(choice.finish_reason);
+      : mapOsmFinishReason(choice.finish_reason);
 
     return {
       content,
@@ -443,7 +443,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
       usage: usageInfo,
       warnings: [],
       providerMetadata: {
-        openrouter: OpenRouterProviderMetadataSchema.parse({
+        osm: osmProviderMetadataSchema.parse({
           provider: response.provider ?? '',
           reasoning_details: choice.message.reasoning_details ?? [],
           annotations:
@@ -506,11 +506,11 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
     };
   }> {
     const providerOptions = options.providerOptions || {};
-    const openrouterOptions = providerOptions.openrouter || {};
+    const osmOptions = providerOptions.osm || {};
 
     const args = {
       ...this.getArgs(options),
-      ...openrouterOptions,
+      ...osmOptions,
     };
 
     const { value: response, responseHeaders } = await postJsonToApi({
@@ -535,9 +535,9 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
               }
             : undefined,
       },
-      failedResponseHandler: openrouterFailedResponseHandler,
+      failedResponseHandler: osmFailedResponseHandler,
       successfulResponseHandler: createEventSourceResponseHandler(
-        OpenRouterStreamChatCompletionChunkSchema,
+        OsmStreamChatCompletionChunkSchema,
       ),
       abortSignal: options.abortSignal,
       fetch: this.config.fetch,
@@ -571,7 +571,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
     };
 
     // Track provider-specific usage information
-    const openrouterUsage: Partial<OpenRouterUsageAccounting> = {};
+    const osmUsage: Partial<OsmUsageAccounting> = {};
 
     // Track raw usage from the API response for usage.raw
     let rawUsage: JSONObject | undefined;
@@ -591,15 +591,13 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
     let reasoningStarted = false;
     let textId: string | undefined;
     let reasoningId: string | undefined;
-    let openrouterResponseId: string | undefined;
+    let osmResponseId: string | undefined;
     let provider: string | undefined;
 
     return {
       stream: response.pipeThrough(
         new TransformStream<
-          ParseResult<
-            z.infer<typeof OpenRouterStreamChatCompletionChunkSchema>
-          >,
+          ParseResult<z.infer<typeof OsmStreamChatCompletionChunkSchema>>,
           LanguageModelV3StreamPart
         >({
           transform(chunk, controller) {
@@ -629,7 +627,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
             }
 
             if (value.id) {
-              openrouterResponseId = value.id;
+              osmResponseId = value.id;
               controller.enqueue({
                 type: 'response-metadata',
                 id: value.id,
@@ -652,31 +650,31 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
 
               const promptTokens = value.usage.prompt_tokens ?? 0;
               const completionTokens = value.usage.completion_tokens ?? 0;
-              openrouterUsage.promptTokens = promptTokens;
+              osmUsage.promptTokens = promptTokens;
 
               if (value.usage.prompt_tokens_details) {
-                openrouterUsage.promptTokensDetails = {
+                osmUsage.promptTokensDetails = {
                   cachedTokens:
                     value.usage.prompt_tokens_details.cached_tokens ?? 0,
                 };
               }
 
-              openrouterUsage.completionTokens = completionTokens;
+              osmUsage.completionTokens = completionTokens;
               if (value.usage.completion_tokens_details) {
-                openrouterUsage.completionTokensDetails = {
+                osmUsage.completionTokensDetails = {
                   reasoningTokens:
                     value.usage.completion_tokens_details.reasoning_tokens ?? 0,
                 };
               }
 
               if (value.usage.cost != null) {
-                openrouterUsage.cost = value.usage.cost;
+                osmUsage.cost = value.usage.cost;
               }
-              openrouterUsage.totalTokens = value.usage.total_tokens;
+              osmUsage.totalTokens = value.usage.total_tokens;
               const upstreamInferenceCost =
                 value.usage.cost_details?.upstream_inference_cost;
               if (upstreamInferenceCost != null) {
-                openrouterUsage.costDetails = {
+                osmUsage.costDetails = {
                   upstreamInferenceCost,
                 };
               }
@@ -685,7 +683,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
             const choice = value.choices[0];
 
             if (choice?.finish_reason != null) {
-              finishReason = mapOpenRouterFinishReason(choice.finish_reason);
+              finishReason = mapOsmFinishReason(choice.finish_reason);
             }
 
             if (choice?.delta == null) {
@@ -699,7 +697,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
               providerMetadata?: SharedV3ProviderMetadata,
             ) => {
               if (!reasoningStarted) {
-                reasoningId = openrouterResponseId || generateId();
+                reasoningId = osmResponseId || generateId();
                 controller.enqueue({
                   providerMetadata,
                   type: 'reasoning-start',
@@ -746,7 +744,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
               // Emit reasoning_details in providerMetadata for each delta chunk
               // so users can accumulate them on their end before sending back
               const reasoningMetadata: SharedV3ProviderMetadata = {
-                openrouter: {
+                osm: {
                   reasoning_details: delta.reasoning_details,
                 },
               };
@@ -795,7 +793,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
                   providerMetadata:
                     accumulatedReasoningDetails.length > 0
                       ? {
-                          openrouter: {
+                          osm: {
                             reasoning_details: accumulatedReasoningDetails,
                           },
                         }
@@ -805,7 +803,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
               }
 
               if (!textStarted) {
-                textId = openrouterResponseId || generateId();
+                textId = osmResponseId || generateId();
                 controller.enqueue({
                   type: 'text-start',
                   id: textId,
@@ -829,7 +827,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
                     url: annotation.url_citation.url,
                     title: annotation.url_citation.title ?? '',
                     providerMetadata: {
-                      openrouter: {
+                      osm: {
                         content: annotation.url_citation.content ?? '',
                         startIndex: annotation.url_citation.start_index ?? 0,
                         endIndex: annotation.url_citation.end_index ?? 0,
@@ -858,7 +856,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
               for (const toolCallDelta of delta.tool_calls) {
                 const index = toolCallDelta.index ?? toolCalls.length - 1;
 
-                // Tool call start. OpenRouter returns all information except the arguments in the first chunk.
+                // Tool call start. Osm returns all information except the arguments in the first chunk.
                 if (toolCalls[index] == null) {
                   if (toolCallDelta.type !== 'function') {
                     throw new InvalidResponseDataError({
@@ -937,7 +935,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
                       input: toolCall.function.arguments,
                       providerMetadata: !reasoningDetailsAttachedToToolCall
                         ? {
-                            openrouter: {
+                            osm: {
                               reasoning_details: accumulatedReasoningDetails,
                             },
                           }
@@ -1001,7 +999,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
                     input: toolCall.function.arguments,
                     providerMetadata: !reasoningDetailsAttachedToToolCall
                       ? {
-                          openrouter: {
+                          osm: {
                             reasoning_details: accumulatedReasoningDetails,
                           },
                         }
@@ -1057,7 +1055,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
                       : '{}',
                     providerMetadata: !reasoningDetailsAttachedToToolCall
                       ? {
-                          openrouter: {
+                          osm: {
                             reasoning_details: accumulatedReasoningDetails,
                           },
                         }
@@ -1079,7 +1077,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
                 providerMetadata:
                   accumulatedReasoningDetails.length > 0
                     ? {
-                        openrouter: {
+                        osm: {
                           reasoning_details: accumulatedReasoningDetails,
                         },
                       }
@@ -1093,29 +1091,28 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
               });
             }
 
-            const openrouterMetadata: {
-              usage: Partial<OpenRouterUsageAccounting>;
+            const osmMetadata: {
+              usage: Partial<OsmUsageAccounting>;
               provider?: string;
               reasoning_details?: ReasoningDetailUnion[];
               annotations?: FileAnnotation[];
             } = {
-              usage: openrouterUsage,
+              usage: osmUsage,
             };
 
             // Only include provider if it's actually set
             if (provider !== undefined) {
-              openrouterMetadata.provider = provider;
+              osmMetadata.provider = provider;
             }
 
             // Include accumulated reasoning_details if any were received
             if (accumulatedReasoningDetails.length > 0) {
-              openrouterMetadata.reasoning_details =
-                accumulatedReasoningDetails;
+              osmMetadata.reasoning_details = accumulatedReasoningDetails;
             }
 
             // Include accumulated file annotations if any were received
             if (accumulatedFileAnnotations.length > 0) {
-              openrouterMetadata.annotations = accumulatedFileAnnotations;
+              osmMetadata.annotations = accumulatedFileAnnotations;
             }
 
             // Set raw usage before emitting finish event
@@ -1126,7 +1123,7 @@ export class OpenRouterChatLanguageModel implements LanguageModelV3 {
               finishReason,
               usage,
               providerMetadata: {
-                openrouter: openrouterMetadata,
+                osm: osmMetadata,
               },
             });
           },

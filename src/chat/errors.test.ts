@@ -2,19 +2,19 @@ import type { LanguageModelV3Prompt } from '@ai-sdk/provider';
 
 import { createTestServer } from '@ai-sdk/test-server';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
-import { createOpenRouter } from '../provider';
+import { createOsm } from '../provider';
 
 const TEST_PROMPT: LanguageModelV3Prompt = [
   { role: 'user', content: [{ type: 'text', text: 'Hello' }] },
 ];
 
-const provider = createOpenRouter({
-  baseURL: 'https://test.openrouter.ai/api/v1',
+const provider = createOsm({
+  baseURL: 'https://test.osm.ai/api/v1',
   apiKey: 'test-api-key',
 });
 
 const server = createTestServer({
-  'https://test.openrouter.ai/api/v1/chat/completions': {},
+  'https://test.osm.ai/api/v1/chat/completions': {},
 });
 
 beforeAll(() => server.server.start());
@@ -24,11 +24,9 @@ afterAll(() => server.server.stop());
 describe('HTTP 200 Error Response Handling', () => {
   describe('doGenerate', () => {
     it('should throw APICallError for HTTP 200 responses with error payloads', async () => {
-      // OpenRouter sometimes returns HTTP 200 with an error object instead of choices
+      // Osm sometimes returns HTTP 200 with an error object instead of choices
       // This can occur for various server errors (e.g., internal errors, processing failures)
-      server.urls[
-        'https://test.openrouter.ai/api/v1/chat/completions'
-      ]!.response = {
+      server.urls['https://test.osm.ai/api/v1/chat/completions']!.response = {
         type: 'json-value',
         body: {
           error: {
@@ -50,9 +48,7 @@ describe('HTTP 200 Error Response Handling', () => {
 
     it('should parse successful responses normally when no error present', async () => {
       // Normal successful response without error
-      server.urls[
-        'https://test.openrouter.ai/api/v1/chat/completions'
-      ]!.response = {
+      server.urls['https://test.osm.ai/api/v1/chat/completions']!.response = {
         type: 'json-value',
         body: {
           id: 'gen-123',

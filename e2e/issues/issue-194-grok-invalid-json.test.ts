@@ -10,15 +10,15 @@
 import { generateText, streamText, tool } from 'ai';
 import { describe, expect, it, vi } from 'vitest';
 import { z } from 'zod/v4';
-import { createOpenRouter } from '@/src';
+import { createOsm } from '@/src';
 
 vi.setConfig({
   testTimeout: 60_000,
 });
 
 describe('Issue #194: Grok 4 Fast Invalid JSON response', () => {
-  const openrouter = createOpenRouter({
-    apiKey: process.env.OPENROUTER_API_KEY,
+  const openrouter = createOsm({
+    apiKey: process.env.OSM_API_KEY,
     baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
   });
 

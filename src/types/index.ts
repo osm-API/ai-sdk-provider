@@ -2,16 +2,16 @@ import type { LanguageModelV3, LanguageModelV3Prompt } from '@ai-sdk/provider';
 
 export type { LanguageModelV3, LanguageModelV3Prompt };
 
-export * from './openrouter-embedding-settings';
-export * from './openrouter-image-settings';
+export * from './osm-chat-settings';
+export * from './osm-completion-settings';
+export * from './osm-embedding-settings';
+export * from './osm-image-settings';
 
-export type OpenRouterProviderOptions = {
+export type OsmProviderOptions = {
   models?: string[];
 
   /**
-   * https://openrouter.ai/docs/use-cases/reasoning-tokens
-   * One of `max_tokens` or `effort` is required.
-   * If `exclude` is true, reasoning will be removed from the response. Default is false.
+   * Optional reasoning settings
    */
   reasoning?: {
     enabled?: boolean;
@@ -27,12 +27,12 @@ export type OpenRouterProviderOptions = {
 
   /**
    * A unique identifier representing your end-user, which can
-   * help OpenRouter to monitor and detect abuse.
+   * help OSM to monitor and detect abuse.
    */
   user?: string;
 };
 
-export type OpenRouterSharedSettings = OpenRouterProviderOptions & {
+export type OsmSharedSettings = OsmProviderOptions & {
   /**
    * @deprecated use `reasoning` instead
    */
@@ -42,7 +42,6 @@ export type OpenRouterSharedSettings = OpenRouterProviderOptions & {
 
   /**
    * Enable usage accounting to get detailed token usage information.
-   * https://openrouter.ai/docs/use-cases/usage-accounting
    */
   usage?: {
     /**
@@ -54,9 +53,8 @@ export type OpenRouterSharedSettings = OpenRouterProviderOptions & {
 
 /**
  * Usage accounting response
- * @see https://openrouter.ai/docs/use-cases/usage-accounting
  */
-export type OpenRouterUsageAccounting = {
+export type OsmUsageAccounting = {
   promptTokens: number;
   promptTokensDetails?: {
     cachedTokens: number;

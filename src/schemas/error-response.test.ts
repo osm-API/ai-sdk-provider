@@ -1,6 +1,6 @@
-import { OpenRouterErrorResponseSchema } from './error-response';
+import { osmErrorResponseSchema } from './error-response';
 
-describe('OpenRouterErrorResponseSchema', () => {
+describe('osmErrorResponseSchema', () => {
   it('should be valid without a type, code, and param', () => {
     const errorWithoutTypeCodeAndParam = {
       error: {
@@ -10,9 +10,7 @@ describe('OpenRouterErrorResponseSchema', () => {
       user_id: 'example_1',
     };
 
-    const result = OpenRouterErrorResponseSchema.parse(
-      errorWithoutTypeCodeAndParam,
-    );
+    const result = osmErrorResponseSchema.parse(errorWithoutTypeCodeAndParam);
 
     expect(result).toEqual({
       error: {
@@ -37,7 +35,7 @@ describe('OpenRouterErrorResponseSchema', () => {
       },
     };
 
-    const result = OpenRouterErrorResponseSchema.parse(errorWithType);
+    const result = osmErrorResponseSchema.parse(errorWithType);
 
     expect(result).toEqual({
       error: {

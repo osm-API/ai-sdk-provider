@@ -26,7 +26,7 @@ function mapToUnified(
   }
 }
 
-export function mapOpenRouterFinishReason(
+export function mapOsmFinishReason(
   finishReason: string | null | undefined,
 ): LanguageModelV3FinishReason {
   return {

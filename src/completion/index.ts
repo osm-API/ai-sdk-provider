@@ -8,11 +8,11 @@ import type {
 } from '@ai-sdk/provider';
 import type { ParseResult } from '@ai-sdk/provider-utils';
 import type { z } from 'zod/v4';
-import type { OpenRouterUsageAccounting } from '../types';
+import type { OsmUsageAccounting } from '../types';
 import type {
-  OpenRouterCompletionModelId,
-  OpenRouterCompletionSettings,
-} from '../types/openrouter-completion-settings';
+  OsmCompletionModelId,
+  OsmCompletionSettings,
+} from '../types/osm-completion-settings';
 
 import {
   APICallError,
@@ -26,17 +26,17 @@ import {
   generateId,
   postJsonToApi,
 } from '@ai-sdk/provider-utils';
-import { openrouterFailedResponseHandler } from '../schemas/error-response';
-import { OpenRouterProviderMetadataSchema } from '../schemas/provider-metadata';
+import { osmFailedResponseHandler } from '../schemas/error-response';
+import { osmProviderMetadataSchema } from '../schemas/provider-metadata';
 import { computeTokenUsage, emptyUsage } from '../utils/compute-token-usage';
 import {
   createFinishReason,
-  mapOpenRouterFinishReason,
+  mapOsmFinishReason,
 } from '../utils/map-finish-reason';
-import { convertToOpenRouterCompletionPrompt } from './convert-to-openrouter-completion-prompt';
-import { OpenRouterCompletionChunkSchema } from './schemas';
+import { convertToOsmCompletionPrompt } from './convert-to-osm-completion-prompt';
+import { OsmCompletionChunkSchema } from './schemas';
 
-type OpenRouterCompletionConfig = {
+type OsmCompletionConfig = {
   provider: string;
   compatibility: 'strict' | 'compatible';
   headers: () => Record<string, string | undefined>;
@@ -45,10 +45,10 @@ type OpenRouterCompletionConfig = {
   extraBody?: Record<string, unknown>;
 };
 
-export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
+export class OsmCompletionLanguageModel implements LanguageModelV3 {
   readonly specificationVersion = 'v3' as const;
-  readonly provider = 'openrouter';
-  readonly modelId: OpenRouterCompletionModelId;
+  readonly provider = 'osm';
+  readonly modelId: OsmCompletionModelId;
   readonly supportsImageUrls = true;
   readonly supportedUrls: Record<string, RegExp[]> = {
     'image/*': [
@@ -59,14 +59,14 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
     'application/*': [/^data:application\//, /^https?:\/\/.+$/],
   };
   readonly defaultObjectGenerationMode = undefined;
-  readonly settings: OpenRouterCompletionSettings;
+  readonly settings: OsmCompletionSettings;
 
-  private readonly config: OpenRouterCompletionConfig;
+  private readonly config: OsmCompletionConfig;
 
   constructor(
-    modelId: OpenRouterCompletionModelId,
-    settings: OpenRouterCompletionSettings,
-    config: OpenRouterCompletionConfig,
+    modelId: OsmCompletionModelId,
+    settings: OsmCompletionSettings,
+    config: OsmCompletionConfig,
   ) {
     this.modelId = modelId;
     this.settings = settings;
@@ -87,7 +87,7 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
     tools,
     toolChoice,
   }: LanguageModelV3CallOptions) {
-    const { prompt: completionPrompt } = convertToOpenRouterCompletionPrompt({
+    const { prompt: completionPrompt } = convertToOsmCompletionPrompt({
       prompt,
       inputFormat: 'prompt',
     });
@@ -137,7 +137,7 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
       // prompt:
       prompt: completionPrompt,
 
-      // OpenRouter specific settings:
+      // Osm specific settings:
       include_reasoning: this.settings.includeReasoning,
       reasoning: this.settings.reasoning,
 
@@ -151,11 +151,11 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
     options: LanguageModelV3CallOptions,
   ): Promise<Awaited<ReturnType<LanguageModelV3['doGenerate']>>> {
     const providerOptions = options.providerOptions || {};
-    const openrouterOptions = providerOptions.openrouter || {};
+    const osmOptions = providerOptions.osm || {};
 
     const args = {
       ...this.getArgs(options),
-      ...openrouterOptions,
+      ...osmOptions,
     };
 
     const { value: response, responseHeaders } = await postJsonToApi({
@@ -165,9 +165,9 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
       }),
       headers: combineHeaders(this.config.headers(), options.headers),
       body: args,
-      failedResponseHandler: openrouterFailedResponseHandler,
+      failedResponseHandler: osmFailedResponseHandler,
       successfulResponseHandler: createJsonResponseHandler(
-        OpenRouterCompletionChunkSchema,
+        OsmCompletionChunkSchema,
       ),
       abortSignal: options.abortSignal,
       fetch: this.config.fetch,
@@ -192,7 +192,7 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
 
     if (!choice) {
       throw new NoContentGeneratedError({
-        message: 'No choice in OpenRouter completion response',
+        message: 'No choice in Osm completion response',
       });
     }
 
@@ -203,11 +203,11 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
           text: choice.text ?? '',
         },
       ],
-      finishReason: mapOpenRouterFinishReason(choice.finish_reason),
+      finishReason: mapOsmFinishReason(choice.finish_reason),
       usage: response.usage ? computeTokenUsage(response.usage) : emptyUsage(),
       warnings: [],
       providerMetadata: {
-        openrouter: OpenRouterProviderMetadataSchema.parse({
+        osm: osmProviderMetadataSchema.parse({
           provider: response.provider ?? '',
           usage: {
             promptTokens: response.usage?.prompt_tokens ?? 0,
@@ -256,11 +256,11 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
     options: LanguageModelV3CallOptions,
   ): Promise<Awaited<ReturnType<LanguageModelV3['doStream']>>> {
     const providerOptions = options.providerOptions || {};
-    const openrouterOptions = providerOptions.openrouter || {};
+    const osmOptions = providerOptions.osm || {};
 
     const args = {
       ...this.getArgs(options),
-      ...openrouterOptions,
+      ...osmOptions,
     };
 
     const { value: response, responseHeaders } = await postJsonToApi({
@@ -279,9 +279,9 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
             ? { include_usage: true }
             : undefined,
       },
-      failedResponseHandler: openrouterFailedResponseHandler,
+      failedResponseHandler: osmFailedResponseHandler,
       successfulResponseHandler: createEventSourceResponseHandler(
-        OpenRouterCompletionChunkSchema,
+        OsmCompletionChunkSchema,
       ),
       abortSignal: options.abortSignal,
       fetch: this.config.fetch,
@@ -303,7 +303,7 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
       raw: undefined,
     };
 
-    const openrouterUsage: Partial<OpenRouterUsageAccounting> = {};
+    const osmUsage: Partial<OsmUsageAccounting> = {};
     let provider: string | undefined;
 
     // Track raw usage from the API response for usage.raw
@@ -312,7 +312,7 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
     return {
       stream: response.pipeThrough(
         new TransformStream<
-          ParseResult<z.infer<typeof OpenRouterCompletionChunkSchema>>,
+          ParseResult<z.infer<typeof OsmCompletionChunkSchema>>,
           LanguageModelV3StreamPart
         >({
           transform(chunk, controller) {
@@ -350,31 +350,31 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
 
               const promptTokens = value.usage.prompt_tokens ?? 0;
               const completionTokens = value.usage.completion_tokens ?? 0;
-              openrouterUsage.promptTokens = promptTokens;
+              osmUsage.promptTokens = promptTokens;
 
               if (value.usage.prompt_tokens_details) {
-                openrouterUsage.promptTokensDetails = {
+                osmUsage.promptTokensDetails = {
                   cachedTokens:
                     value.usage.prompt_tokens_details.cached_tokens ?? 0,
                 };
               }
 
-              openrouterUsage.completionTokens = completionTokens;
+              osmUsage.completionTokens = completionTokens;
               if (value.usage.completion_tokens_details) {
-                openrouterUsage.completionTokensDetails = {
+                osmUsage.completionTokensDetails = {
                   reasoningTokens:
                     value.usage.completion_tokens_details.reasoning_tokens ?? 0,
                 };
               }
 
               if (value.usage.cost != null) {
-                openrouterUsage.cost = value.usage.cost;
+                osmUsage.cost = value.usage.cost;
               }
-              openrouterUsage.totalTokens = value.usage.total_tokens;
+              osmUsage.totalTokens = value.usage.total_tokens;
               const upstreamInferenceCost =
                 value.usage.cost_details?.upstream_inference_cost;
               if (upstreamInferenceCost != null) {
-                openrouterUsage.costDetails = {
+                osmUsage.costDetails = {
                   upstreamInferenceCost,
                 };
               }
@@ -383,7 +383,7 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
             const choice = value.choices[0];
 
             if (choice?.finish_reason != null) {
-              finishReason = mapOpenRouterFinishReason(choice.finish_reason);
+              finishReason = mapOsmFinishReason(choice.finish_reason);
             }
 
             if (choice?.text != null) {
@@ -399,16 +399,16 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
             // Set raw usage before emitting finish event
             usage.raw = rawUsage;
 
-            const openrouterMetadata: {
-              usage: Partial<OpenRouterUsageAccounting>;
+            const osmMetadata: {
+              usage: Partial<OsmUsageAccounting>;
               provider?: string;
             } = {
-              usage: openrouterUsage,
+              usage: osmUsage,
             };
 
             // Only include provider if it's actually set
             if (provider !== undefined) {
-              openrouterMetadata.provider = provider;
+              osmMetadata.provider = provider;
             }
 
             controller.enqueue({
@@ -416,7 +416,7 @@ export class OpenRouterCompletionLanguageModel implements LanguageModelV3 {
               finishReason,
               usage,
               providerMetadata: {
-                openrouter: openrouterMetadata,
+                osm: osmMetadata,
               },
             });
           },

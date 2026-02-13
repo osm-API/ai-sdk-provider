@@ -18,7 +18,7 @@
  */
 import { generateText } from 'ai';
 import { describe, expect, it, vi } from 'vitest';
-import { createOpenRouter } from '@/src';
+import { createOsm } from '@/src';
 
 vi.setConfig({
   testTimeout: 120_000,
@@ -74,8 +74,8 @@ function extractBase64FromDataUrl(dataUrl: string): string {
 }
 
 describe('Issue #269: image_size parameter for google/gemini-3-pro-image-preview', () => {
-  const openrouter = createOpenRouter({
-    apiKey: process.env.OPENROUTER_API_KEY,
+  const openrouter = createOsm({
+    apiKey: process.env.OSM_API_KEY,
   });
 
   describe('Feature request: image_size should produce different resolutions', () => {

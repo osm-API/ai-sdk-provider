@@ -196,7 +196,7 @@ describe('ReasoningDetailsDuplicateTracker', () => {
 
   describe('cross-type collision behavior (matches API)', () => {
     it('should collide when different types have same field value', () => {
-      // This matches the OpenRouter API behavior - keys are not type-prefixed
+      // This matches the Osm API behavior - keys are not type-prefixed
       // so different types with the same value will collide
       const tracker = new ReasoningDetailsDuplicateTracker();
 
@@ -221,7 +221,7 @@ describe('ReasoningDetailsDuplicateTracker', () => {
     });
 
     it('should collide text field with signature field having same value', () => {
-      // This matches the OpenRouter API behavior - text and signature use
+      // This matches the Osm API behavior - text and signature use
       // the same key space, so they will collide if they have the same value
       const tracker = new ReasoningDetailsDuplicateTracker();
 
@@ -244,7 +244,7 @@ describe('ReasoningDetailsDuplicateTracker', () => {
 
   describe('empty string handling (matches API)', () => {
     it('should treat empty string text as falsy and fall through to signature', () => {
-      // This matches the OpenRouter API behavior - empty strings are falsy
+      // This matches the Osm API behavior - empty strings are falsy
       // so they fall through to the next field
       const tracker = new ReasoningDetailsDuplicateTracker();
 
@@ -266,7 +266,7 @@ describe('ReasoningDetailsDuplicateTracker', () => {
     });
 
     it('should treat empty string encrypted id as falsy and fall through to data', () => {
-      // This matches the OpenRouter API behavior - empty strings are falsy
+      // This matches the Osm API behavior - empty strings are falsy
       const tracker = new ReasoningDetailsDuplicateTracker();
 
       const detailWithEmptyId: ReasoningDetailUnion = {

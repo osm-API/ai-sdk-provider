@@ -1,11 +1,10 @@
-import type { OpenRouterSharedSettings } from '..';
+import type { OsmSharedSettings } from '..';
 
-// https://openrouter.ai/api/v1/models
-export type OpenRouterEmbeddingModelId = string;
+export type OsmEmbeddingModelId = string;
 
-export type OpenRouterEmbeddingSettings = {
+export type OsmEmbeddingSettings = {
   /**
-   * A unique identifier representing your end-user, which can help OpenRouter to
+   * A unique identifier representing your end-user, which can help OSM to
    * monitor and detect abuse.
    */
   user?: string;
@@ -53,4 +52,4 @@ export type OpenRouterEmbeddingSettings = {
       request?: number | string;
     };
   };
-} & OpenRouterSharedSettings;
+} & OsmSharedSettings;

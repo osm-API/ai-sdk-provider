@@ -1,11 +1,11 @@
 import { embed, embedMany } from 'ai';
 import { describe, expect, it, vi } from 'vitest';
-import { createOpenRouter } from '@/src';
+import { createOsm } from '@/src';
 
 vi.setConfig({ testTimeout: 60_000 });
 
-const openrouter = createOpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY,
+const openrouter = createOsm({
+  apiKey: process.env.OSM_API_KEY,
   baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
 });
 

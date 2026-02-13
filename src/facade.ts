@@ -1,29 +1,29 @@
-import type { OpenRouterProviderSettings } from './provider';
+import type { OsmProviderSettings } from './provider';
 import type {
-  OpenRouterChatModelId,
-  OpenRouterChatSettings,
-} from './types/openrouter-chat-settings';
+  OsmChatModelId,
+  OsmChatSettings,
+} from './types/osm-chat-settings';
 import type {
-  OpenRouterCompletionModelId,
-  OpenRouterCompletionSettings,
-} from './types/openrouter-completion-settings';
+  OsmCompletionModelId,
+  OsmCompletionSettings,
+} from './types/osm-completion-settings';
 import type {
-  OpenRouterEmbeddingModelId,
-  OpenRouterEmbeddingSettings,
-} from './types/openrouter-embedding-settings';
+  OsmEmbeddingModelId,
+  OsmEmbeddingSettings,
+} from './types/osm-embedding-settings';
 
 import { loadApiKey, withoutTrailingSlash } from '@ai-sdk/provider-utils';
-import { OpenRouterChatLanguageModel } from './chat';
-import { OpenRouterCompletionLanguageModel } from './completion';
-import { OpenRouterEmbeddingModel } from './embedding';
+import { OsmChatLanguageModel } from './chat';
+import { OsmCompletionLanguageModel } from './completion';
+import { OsmEmbeddingModel } from './embedding';
 
 /**
-@deprecated Use `createOpenRouter` instead.
+@deprecated Use `createOsm` instead.
  */
-export class OpenRouter {
+export class Osm {
   /**
 Use a different URL prefix for API calls, e.g. to use proxy servers.
-The default prefix is `https://openrouter.ai/api/v1`.
+The default prefix is `https://osm.ai/api/v1`.
    */
   readonly baseURL: string;
 
@@ -39,20 +39,14 @@ Custom headers to include in the requests.
   readonly headers?: Record<string, string>;
 
   /**
-   * Record of provider slugs to API keys for injecting into provider routing.
+   * Creates a new Osm provider instance.
    */
-  readonly api_keys?: Record<string, string>;
-
-  /**
-   * Creates a new OpenRouter provider instance.
-   */
-  constructor(options: OpenRouterProviderSettings = {}) {
+  constructor(options: OsmProviderSettings = {}) {
     this.baseURL =
       withoutTrailingSlash(options.baseURL ?? options.baseUrl) ??
-      'https://openrouter.ai/api/v1';
+      'https://api.osmapi.com/v1';
     this.apiKey = options.apiKey;
     this.headers = options.headers;
-    this.api_keys = options.api_keys;
   }
 
   private get baseConfig() {
@@ -61,21 +55,17 @@ Custom headers to include in the requests.
       headers: () => ({
         Authorization: `Bearer ${loadApiKey({
           apiKey: this.apiKey,
-          environmentVariableName: 'OPENROUTER_API_KEY',
-          description: 'OpenRouter',
+          environmentVariableName: 'OSM_API_KEY',
+          description: 'Osm',
         })}`,
         ...this.headers,
-        ...(this.api_keys &&
-          Object.keys(this.api_keys).length > 0 && {
-            'X-Provider-API-Keys': JSON.stringify(this.api_keys),
-          }),
       }),
     };
   }
 
-  chat(modelId: OpenRouterChatModelId, settings: OpenRouterChatSettings = {}) {
-    return new OpenRouterChatLanguageModel(modelId, settings, {
-      provider: 'openrouter.chat',
+  chat(modelId: OsmChatModelId, settings: OsmChatSettings = {}) {
+    return new OsmChatLanguageModel(modelId, settings, {
+      provider: 'osm.chat',
       ...this.baseConfig,
       compatibility: 'strict',
       url: ({ path }) => `${this.baseURL}${path}`,
@@ -83,11 +73,11 @@ Custom headers to include in the requests.
   }
 
   completion(
-    modelId: OpenRouterCompletionModelId,
-    settings: OpenRouterCompletionSettings = {},
+    modelId: OsmCompletionModelId,
+    settings: OsmCompletionSettings = {},
   ) {
-    return new OpenRouterCompletionLanguageModel(modelId, settings, {
-      provider: 'openrouter.completion',
+    return new OsmCompletionLanguageModel(modelId, settings, {
+      provider: 'osm.completion',
       ...this.baseConfig,
       compatibility: 'strict',
       url: ({ path }) => `${this.baseURL}${path}`,
@@ -95,11 +85,11 @@ Custom headers to include in the requests.
   }
 
   textEmbeddingModel(
-    modelId: OpenRouterEmbeddingModelId,
-    settings: OpenRouterEmbeddingSettings = {},
+    modelId: OsmEmbeddingModelId,
+    settings: OsmEmbeddingSettings = {},
   ) {
-    return new OpenRouterEmbeddingModel(modelId, settings, {
-      provider: 'openrouter.embedding',
+    return new OsmEmbeddingModel(modelId, settings, {
+      provider: 'osm.embedding',
       ...this.baseConfig,
       url: ({ path }) => `${this.baseURL}${path}`,
     });
@@ -108,10 +98,7 @@ Custom headers to include in the requests.
   /**
    * @deprecated Use textEmbeddingModel instead
    */
-  embedding(
-    modelId: OpenRouterEmbeddingModelId,
-    settings: OpenRouterEmbeddingSettings = {},
-  ) {
+  embedding(modelId: OsmEmbeddingModelId, settings: OsmEmbeddingSettings = {}) {
     return this.textEmbeddingModel(modelId, settings);
   }
 }

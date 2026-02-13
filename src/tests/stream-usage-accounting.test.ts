@@ -1,13 +1,13 @@
-import type { OpenRouterChatSettings } from '../types/openrouter-chat-settings';
+import type { OsmChatSettings } from '../types/osm-chat-settings';
 
 import { convertReadableStreamToArray } from '@ai-sdk/provider-utils/test';
 import { createTestServer } from '@ai-sdk/test-server';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
-import { OpenRouterChatLanguageModel } from '../chat';
+import { OsmChatLanguageModel } from '../chat';
 
-describe('OpenRouter Streaming Usage Accounting', () => {
+describe('Osm Streaming Usage Accounting', () => {
   const server = createTestServer({
-    'https://api.openrouter.ai/chat/completions': {
+    'https://api.osm.ai/chat/completions': {
       response: { type: 'stream-chunks', chunks: [] },
     },
   });
@@ -41,7 +41,7 @@ describe('OpenRouter Streaming Usage Accounting', () => {
 
     chunks.push('data: [DONE]\n\n');
 
-    server.urls['https://api.openrouter.ai/chat/completions']!.response = {
+    server.urls['https://api.osm.ai/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks,
     };
@@ -51,13 +51,13 @@ describe('OpenRouter Streaming Usage Accounting', () => {
     prepareStreamResponse();
 
     // Create model with usage accounting enabled
-    const settings: OpenRouterChatSettings = {
+    const settings: OsmChatSettings = {
       usage: { include: true },
     };
 
-    const model = new OpenRouterChatLanguageModel('test-model', settings, {
-      provider: 'openrouter.chat',
-      url: () => 'https://api.openrouter.ai/chat/completions',
+    const model = new OsmChatLanguageModel('test-model', settings, {
+      provider: 'osm.chat',
+      url: () => 'https://api.osm.ai/chat/completions',
       headers: () => ({}),
       compatibility: 'strict',
       fetch: global.fetch,
@@ -90,13 +90,13 @@ describe('OpenRouter Streaming Usage Accounting', () => {
     prepareStreamResponse(true);
 
     // Create model with usage accounting enabled
-    const settings: OpenRouterChatSettings = {
+    const settings: OsmChatSettings = {
       usage: { include: true },
     };
 
-    const model = new OpenRouterChatLanguageModel('test-model', settings, {
-      provider: 'openrouter.chat',
-      url: () => 'https://api.openrouter.ai/chat/completions',
+    const model = new OsmChatLanguageModel('test-model', settings, {
+      provider: 'osm.chat',
+      url: () => 'https://api.osm.ai/chat/completions',
       headers: () => ({}),
       compatibility: 'strict',
       fetch: global.fetch,
@@ -122,10 +122,10 @@ describe('OpenRouter Streaming Usage Accounting', () => {
 
     // Verify metadata is included
     expect(finishChunk?.providerMetadata).toBeDefined();
-    const openrouterData = finishChunk?.providerMetadata?.openrouter;
-    expect(openrouterData).toBeDefined();
+    const osmData = finishChunk?.providerMetadata?.osm;
+    expect(osmData).toBeDefined();
 
-    const usage = openrouterData?.usage;
+    const usage = osmData?.usage;
     expect(usage).toMatchObject({
       promptTokens: 10,
       completionTokens: 20,
@@ -141,13 +141,13 @@ describe('OpenRouter Streaming Usage Accounting', () => {
     prepareStreamResponse(false);
 
     // Create model with usage accounting disabled
-    const settings: OpenRouterChatSettings = {
+    const settings: OsmChatSettings = {
       // No usage property
     };
 
-    const model = new OpenRouterChatLanguageModel('test-model', settings, {
-      provider: 'openrouter.chat',
-      url: () => 'https://api.openrouter.ai/chat/completions',
+    const model = new OsmChatLanguageModel('test-model', settings, {
+      provider: 'osm.chat',
+      url: () => 'https://api.osm.ai/chat/completions',
       headers: () => ({}),
       compatibility: 'strict',
       fetch: global.fetch,
@@ -172,7 +172,7 @@ describe('OpenRouter Streaming Usage Accounting', () => {
     expect(finishChunk).toBeDefined();
 
     // Verify that provider metadata is not included
-    expect(finishChunk?.providerMetadata?.openrouter).toStrictEqual({
+    expect(finishChunk?.providerMetadata?.osm).toStrictEqual({
       usage: {},
     });
   });
@@ -180,13 +180,13 @@ describe('OpenRouter Streaming Usage Accounting', () => {
   it('should include raw usage in finish event usage.raw field with original snake_case format', async () => {
     prepareStreamResponse(true);
 
-    const settings: OpenRouterChatSettings = {
+    const settings: OsmChatSettings = {
       usage: { include: true },
     };
 
-    const model = new OpenRouterChatLanguageModel('test-model', settings, {
-      provider: 'openrouter.chat',
-      url: () => 'https://api.openrouter.ai/chat/completions',
+    const model = new OsmChatLanguageModel('test-model', settings, {
+      provider: 'osm.chat',
+      url: () => 'https://api.osm.ai/chat/completions',
       headers: () => ({}),
       compatibility: 'strict',
       fetch: global.fetch,
@@ -222,12 +222,12 @@ describe('OpenRouter Streaming Usage Accounting', () => {
   it('should compute inputTokens.noCache and outputTokens.text from detail fields in stream', async () => {
     prepareStreamResponse(true);
 
-    const model = new OpenRouterChatLanguageModel(
+    const model = new OsmChatLanguageModel(
       'test-model',
       {},
       {
-        provider: 'openrouter.chat',
-        url: () => 'https://api.openrouter.ai/chat/completions',
+        provider: 'osm.chat',
+        url: () => 'https://api.osm.ai/chat/completions',
         headers: () => ({}),
         compatibility: 'strict',
         fetch: global.fetch,
@@ -260,7 +260,7 @@ describe('OpenRouter Streaming Usage Accounting', () => {
   });
 
   it('should set noCache equal to total when no detail fields in stream', async () => {
-    server.urls['https://api.openrouter.ai/chat/completions']!.response = {
+    server.urls['https://api.osm.ai/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         `data: {"id":"test-id","model":"test-model","choices":[{"delta":{"content":"Hello"},"index":0}]}\n\n`,
@@ -277,12 +277,12 @@ describe('OpenRouter Streaming Usage Accounting', () => {
       ],
     };
 
-    const model = new OpenRouterChatLanguageModel(
+    const model = new OsmChatLanguageModel(
       'test-model',
       {},
       {
-        provider: 'openrouter.chat',
-        url: () => 'https://api.openrouter.ai/chat/completions',
+        provider: 'osm.chat',
+        url: () => 'https://api.osm.ai/chat/completions',
         headers: () => ({}),
         compatibility: 'strict',
         fetch: global.fetch,
@@ -315,7 +315,7 @@ describe('OpenRouter Streaming Usage Accounting', () => {
   });
 
   it('should pass through cache_write_tokens in stream when present', async () => {
-    server.urls['https://api.openrouter.ai/chat/completions']!.response = {
+    server.urls['https://api.osm.ai/chat/completions']!.response = {
       type: 'stream-chunks',
       chunks: [
         `data: {"id":"test-id","model":"test-model","choices":[{"delta":{"content":"Hello"},"index":0}]}\n\n`,
@@ -337,12 +337,12 @@ describe('OpenRouter Streaming Usage Accounting', () => {
       ],
     };
 
-    const model = new OpenRouterChatLanguageModel(
+    const model = new OsmChatLanguageModel(
       'test-model',
       {},
       {
-        provider: 'openrouter.chat',
-        url: () => 'https://api.openrouter.ai/chat/completions',
+        provider: 'osm.chat',
+        url: () => 'https://api.osm.ai/chat/completions',
         headers: () => ({}),
         compatibility: 'strict',
         fetch: global.fetch,
@@ -377,11 +377,11 @@ describe('OpenRouter Streaming Usage Accounting', () => {
   it('should set usage.raw to undefined when no usage data in stream', async () => {
     prepareStreamResponse(false);
 
-    const settings: OpenRouterChatSettings = {};
+    const settings: OsmChatSettings = {};
 
-    const model = new OpenRouterChatLanguageModel('test-model', settings, {
-      provider: 'openrouter.chat',
-      url: () => 'https://api.openrouter.ai/chat/completions',
+    const model = new OsmChatLanguageModel('test-model', settings, {
+      provider: 'osm.chat',
+      url: () => 'https://api.osm.ai/chat/completions',
       headers: () => ({}),
       compatibility: 'strict',
       fetch: global.fetch,
