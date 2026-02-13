@@ -1,5 +1,11 @@
 # @osmapi/ai-sdk-provider
 
+## 1.0.2
+
+### Patch Changes
+
+- Include README.md and LICENSE in npm package distribution
+
 ## 1.0.1
 
 ### Patch Changes
