@@ -74,13 +74,13 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/yourusername/osm-ai-sdk-provider",
+  "homepage": "https://github.com/osm-API/ai-sdk-provider",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/osm-ai-sdk-provider.git"
+    "url": "git+https://github.com/osm-API/ai-sdk-provider.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/osm-ai-sdk-provider/issues"
+    "url": "https://github.com/osm-API/ai-sdk-provider/issues"
   },
   "keywords": [
     "ai"
