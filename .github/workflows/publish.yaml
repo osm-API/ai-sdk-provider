@@ -71,7 +71,7 @@ jobs:
           echo ""
           echo "Registry configuration:"
           npm config get registry
-          npm config get @openrouter:registry || echo "  (no @openrouter scope override)"
+          npm config get @osm:registry || echo "  (no @osm scope override)"
       
       - name: Publish with OIDC
         if: steps.changesets.outputs.hasChangesets == 'false'
@@ -90,7 +90,7 @@ jobs:
           echo ""
           echo "Registry configuration:"
           echo "  registry: $(npm config get registry)"
-          echo "  @openrouter scope: $(npm config get @openrouter:registry || echo '(inherited from global)')"
+          echo "  @osm scope: $(npm config get @osm:registry || echo '(inherited from global)')"
           echo ""
           echo ".npmrc files status:"
           for npmrc in "$NPM_CONFIG_USERCONFIG" ~/.npmrc .npmrc; do

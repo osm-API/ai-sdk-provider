@@ -2,7 +2,7 @@
  * Regression test for GitHub issue #199
  * https://github.com/osm-API/ai-sdk-provider/issues/199
  *
- * Issue: "PDF Processing Fails on GPT-4.1 and GPT-5 Models via OpenRouter"
+ * Issue: "PDF Processing Fails on GPT-4.1 and GPT-5 Models via OSM"
  *
  * Reported error:
  *   AI_RetryError: Failed after 3 attempts. Last error: Provider returned error
@@ -24,7 +24,7 @@ vi.setConfig({
   testTimeout: 120_000,
 });
 
-describe('Issue #199: PDF Processing Fails on GPT-4.1 and GPT-5 Models via OpenRouter', () => {
+describe('Issue #199: PDF Processing Fails on GPT-4.1 and GPT-5 Models via OSM', () => {
   const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
     baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
