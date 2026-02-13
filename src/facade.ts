@@ -29,7 +29,7 @@ The default prefix is `https://osm.ai/api/v1`.
 
   /**
 API key that is being sent using the `Authorization` header.
-It defaults to the `OPENROUTER_API_KEY` environment variable.
+It defaults to the `OSM_API_KEY` environment variable.
  */
   readonly apiKey?: string;
 
