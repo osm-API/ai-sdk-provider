@@ -11,9 +11,7 @@ const osm = createOsm({
 
 describe('Embeddings', () => {
   it('generates a single embedding', async () => {
-    const model = osm.textEmbeddingModel(
-      'openai/text-embedding-3-small',
-    );
+    const model = osm.textEmbeddingModel('openai/text-embedding-3-small');
 
     const { embedding } = await embed({
       model,
@@ -25,9 +23,7 @@ describe('Embeddings', () => {
   });
 
   it('generates multiple embeddings', async () => {
-    const model = osm.textEmbeddingModel(
-      'openai/text-embedding-3-small',
-    );
+    const model = osm.textEmbeddingModel('openai/text-embedding-3-small');
 
     const { embeddings } = await embedMany({
       model,
@@ -45,9 +41,7 @@ describe('Embeddings', () => {
   });
 
   it('reports usage', async () => {
-    const model = osm.textEmbeddingModel(
-      'openai/text-embedding-3-small',
-    );
+    const model = osm.textEmbeddingModel('openai/text-embedding-3-small');
 
     const { usage } = await embed({
       model,
@@ -58,13 +52,10 @@ describe('Embeddings', () => {
   });
 
   it('accepts provider routing options', async () => {
-    const model = osm.textEmbeddingModel(
-      'openai/text-embedding-3-small',
-      {
-        user: 'e2e-test-user',
-        provider: { order: ['openai'] },
-      },
-    );
+    const model = osm.textEmbeddingModel('openai/text-embedding-3-small', {
+      user: 'e2e-test-user',
+      provider: { order: ['openai'] },
+    });
 
     const { embedding } = await embed({
       model,
@@ -86,9 +77,7 @@ describe('Embeddings', () => {
   });
 
   it('produces similar vectors for similar texts', async () => {
-    const model = osm.textEmbeddingModel(
-      'openai/text-embedding-3-small',
-    );
+    const model = osm.textEmbeddingModel('openai/text-embedding-3-small');
 
     const { embeddings } = await embedMany({
       model,
