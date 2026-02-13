@@ -1,5 +1,14 @@
 # @osmapi/ai-sdk-provider
 
+## 1.0.3
+
+### Patch Changes
+
+- Add Zod schema to JSON Schema conversion for tool calling and structured output support
+- Convert Zod schemas using built-in toJSONSchema() method
+- Remove unnecessary $schema field from converted schemas
+- Enables proper support for function tools and JSON structured output
+
 ## 1.0.2
 
 ### Patch Changes
