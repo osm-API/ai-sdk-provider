@@ -68,7 +68,7 @@ OpenRouter supports embedding models for semantic search, RAG pipelines, and vec
 
 ```ts
 import { embed } from 'ai';
-import { openrouter } from '@openrouter/ai-sdk-provider';
+import { openrouter } from '@osm/ai-sdk-provider';
 
 const { embedding } = await embed({
   model: openrouter.textEmbeddingModel('openai/text-embedding-3-small'),
@@ -82,7 +82,7 @@ console.log(embedding); // Array of numbers representing the embedding
 
 ```ts
 import { embedMany } from 'ai';
-import { openrouter } from '@openrouter/ai-sdk-provider';
+import { openrouter } from '@osm/ai-sdk-provider';
 
 const { embeddings } = await embedMany({
   model: openrouter.textEmbeddingModel('openai/text-embedding-3-small'),
@@ -111,7 +111,7 @@ There are 3 ways to pass extra body to OpenRouter:
 1. Via the `providerOptions.openrouter` property:
 
    ```typescript
-   import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+   import { createOpenRouter } from '@osm/ai-sdk-provider';
    import { streamText } from 'ai';
 
    const openrouter = createOpenRouter({ apiKey: 'your-api-key' });
@@ -132,7 +132,7 @@ There are 3 ways to pass extra body to OpenRouter:
 2. Via the `extraBody` property in the model settings:
 
    ```typescript
-   import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+   import { createOpenRouter } from '@osm/ai-sdk-provider';
    import { streamText } from 'ai';
 
    const openrouter = createOpenRouter({ apiKey: 'your-api-key' });
@@ -152,7 +152,7 @@ There are 3 ways to pass extra body to OpenRouter:
 3. Via the `extraBody` property in the model factory.
 
    ```typescript
-   import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+   import { createOpenRouter } from '@osm/ai-sdk-provider';
    import { streamText } from 'ai';
 
    const openrouter = createOpenRouter({
@@ -177,7 +177,7 @@ You can include Anthropic-specific options directly in your messages when using 
 ### Basic Usage
 
 ```typescript
-import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { createOpenRouter } from '@osm/ai-sdk-provider';
 import { streamText } from 'ai';
 
 const openrouter = createOpenRouter({ apiKey: 'your-api-key' });
@@ -230,7 +230,7 @@ You can enable Anthropic beta features by passing custom headers through the Ope
 #### Basic Usage
 
 ```typescript
-import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { createOpenRouter } from '@osm/ai-sdk-provider';
 import { streamObject } from 'ai';
 
 const provider = createOpenRouter({
@@ -256,7 +256,7 @@ for await (const partialObject of result.partialObjectStream) {
 You can also pass the header at the request level:
 
 ```typescript
-import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { createOpenRouter } from '@osm/ai-sdk-provider';
 import { generateText } from 'ai';
 
 const provider = createOpenRouter({
@@ -281,7 +281,7 @@ await generateText({
 This feature is particularly beneficial when streaming large, nested JSON structures like UI component trees:
 
 ```typescript
-import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { createOpenRouter } from '@osm/ai-sdk-provider';
 import { streamObject } from 'ai';
 import { z } from 'zod';
 
@@ -318,7 +318,7 @@ for await (const partialComponent of result.partialObjectStream) {
 The provider supports the [Response Healing plugin](https://openrouter.ai/docs/guides/features/plugins/response-healing), which automatically validates and repairs malformed JSON responses from AI models. This is particularly useful when using `generateObject` or structured outputs, as it can fix common issues like missing brackets, trailing commas, markdown wrappers, and mixed text.
 
 ```typescript
-import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { createOpenRouter } from '@osm/ai-sdk-provider';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 
@@ -346,7 +346,7 @@ Note that Response Healing only works with non-streaming requests. When the mode
 The provider supports a debug mode that echoes back the request body sent to the upstream provider. This is useful for troubleshooting and understanding how your requests are being processed. Note that debug mode only works with streaming requests.
 
 ```typescript
-import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { createOpenRouter } from '@osm/ai-sdk-provider';
 import { streamText } from 'ai';
 
 const openrouter = createOpenRouter({ apiKey: 'your-api-key' });
