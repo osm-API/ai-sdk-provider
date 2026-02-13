@@ -1,4 +1,4 @@
-# @osm/ai-sdk-provider
+# @osmapi/ai-sdk-provider
 
 ## 2.2.3
 
@@ -103,7 +103,7 @@
   Usage:
 
   ```typescript
-  import { createOpenRouter } from "@osm/ai-sdk-provider";
+  import { createOsm } from "@osmapi/ai-sdk-provider";
   import { generateImage } from "ai";
 
   const openrouter = createOpenRouter();

@@ -25,7 +25,7 @@ jobs:
         with:
           node-version: "20.x"
           registry-url: "https://registry.npmjs.org"
-          scope: "@osm"
+          scope: "@osmapi"
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -71,7 +71,7 @@ jobs:
           echo ""
           echo "Registry configuration:"
           npm config get registry
-          npm config get @osm:registry || echo "  (no @osm scope override)"
+          npm config get @osmapi:registry || echo "  (no @osmapi scope override)"
       
       - name: Publish with OIDC
         if: steps.changesets.outputs.hasChangesets == 'false'
@@ -90,7 +90,7 @@ jobs:
           echo ""
           echo "Registry configuration:"
           echo "  registry: $(npm config get registry)"
-          echo "  @osm scope: $(npm config get @osm:registry || echo '(inherited from global)')"
+          echo "  @osmapi scope: $(npm config get @osmapi:registry || echo '(inherited from global)')"
           echo ""
           echo ".npmrc files status:"
           for npmrc in "$NPM_CONFIG_USERCONFIG" ~/.npmrc .npmrc; do
@@ -104,4 +104,4 @@ jobs:
           done
           echo ""
           echo "Package availability:"
-          npm view @osm/ai-sdk-provider@latest version 2>&1 || echo "  (could not fetch)"
+          npm view @osmapi/ai-sdk-provider@latest version 2>&1 || echo "  (could not fetch)"
