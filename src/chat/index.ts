@@ -141,7 +141,28 @@ export class OsmChatLanguageModel implements LanguageModelV3 {
             ? {
                 type: 'json_schema',
                 json_schema: {
-                  schema: responseFormat.schema,
+                  schema: (() => {
+                    try {
+                      // Use Zod's built-in toJSONSchema() method if available
+                      const zodSchema = responseFormat.schema as any;
+                      if (
+                        typeof zodSchema === 'object' &&
+                        zodSchema !== null &&
+                        typeof zodSchema.toJSONSchema === 'function'
+                      ) {
+                        const schema = zodSchema.toJSONSchema() as any;
+                        // Remove the $schema field as OpenAI API doesn't include it
+                        if ('$schema' in schema) {
+                          const { $schema: _removed, ...rest } = schema;
+                          return rest;
+                        }
+                        return schema;
+                      }
+                      return responseFormat.schema;
+                    } catch (error) {
+                      return responseFormat.schema;
+                    }
+                  })(),
                   strict: true,
                   name: responseFormat.name ?? 'response',
                   ...(responseFormat.description && {
@@ -181,14 +202,42 @@ export class OsmChatLanguageModel implements LanguageModelV3 {
           (tool): tool is LanguageModelV3FunctionTool =>
             tool.type === 'function',
         )
-        .map((tool) => ({
-          type: 'function' as const,
-          function: {
-            name: tool.name,
-            description: tool.description,
-            parameters: tool.inputSchema,
-          },
-        }));
+        .map((tool) => {
+          // Convert Zod schema to JSON Schema
+          let parameters = tool.inputSchema;
+          try {
+            // Use Zod's built-in toJSONSchema() method if available
+            const zodSchema = tool.inputSchema as any;
+            if (
+              typeof zodSchema === 'object' &&
+              zodSchema !== null &&
+              typeof zodSchema.toJSONSchema === 'function'
+            ) {
+              parameters = zodSchema.toJSONSchema();
+              // Remove the $schema field as OSM API doesn't need it
+              if (
+                typeof parameters === 'object' &&
+                parameters !== null &&
+                '$schema' in parameters
+              ) {
+                const { $schema: _removed, ...rest } = parameters as any;
+                parameters = rest;
+              }
+            }
+          } catch (error) {
+            // If conversion fails, use the schema as-is
+            // (it may already be a JSON Schema object)
+            console.error('Error converting schema:', error);
+          }
+          return {
+            type: 'function' as const,
+            function: {
+              name: tool.name,
+              description: tool.description,
+              parameters,
+            },
+          };
+        });
 
       return {
         ...baseArgs,
