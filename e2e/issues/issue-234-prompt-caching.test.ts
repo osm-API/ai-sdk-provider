@@ -27,7 +27,7 @@ vi.setConfig({
   testTimeout: 180_000,
 });
 
-interface OpenRouterUsageMetadata {
+interface OsmUsageMetadata {
   promptTokens?: number;
   completionTokens?: number;
   totalTokens?: number;
@@ -86,7 +86,7 @@ Remember to be helpful and concise in your responses.`;
         expect(response.providerMetadata?.osm).toBeDefined();
 
         const osmMetadata = response.providerMetadata?.osm as {
-          usage?: OpenRouterUsageMetadata;
+          usage?: OsmUsageMetadata;
         };
 
         expect(osmMetadata?.usage).toBeDefined();
@@ -156,7 +156,7 @@ Remember to be helpful and concise in your responses.`;
         expect(response.providerMetadata?.osm).toBeDefined();
 
         const osmMetadata = response.providerMetadata?.osm as {
-          usage?: OpenRouterUsageMetadata;
+          usage?: OsmUsageMetadata;
         };
 
         expect(osmMetadata?.usage).toBeDefined();
