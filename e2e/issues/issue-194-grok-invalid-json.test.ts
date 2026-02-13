@@ -17,12 +17,12 @@ vi.setConfig({
 });
 
 describe('Issue #194: Grok 4 Fast Invalid JSON response', () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
-  const model = openrouter('x-ai/grok-4-fast');
+  const model = osm('x-ai/grok-4-fast');
 
   it('should return valid JSON response with generateText', async () => {
     const response = await generateText({

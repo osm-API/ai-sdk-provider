@@ -23,15 +23,15 @@ vi.setConfig({
 });
 
 describe('Issue #407: Token usage detail fields should not be undefined', () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
   describe('generateText (doGenerate)', () => {
     it('should populate inputTokens.noCache and outputTokens.text with openai/gpt-4.1-nano', async () => {
       const response = await generateText({
-        model: openrouter('openai/gpt-4.1-nano'),
+        model: osm('openai/gpt-4.1-nano'),
         messages: [
           {
             role: 'user',
@@ -61,7 +61,7 @@ describe('Issue #407: Token usage detail fields should not be undefined', () => 
 
     it('should populate reasoning tokens with anthropic/claude-3.7-sonnet:thinking', async () => {
       const response = await generateText({
-        model: openrouter('anthropic/claude-3.7-sonnet:thinking'),
+        model: osm('anthropic/claude-3.7-sonnet:thinking'),
         messages: [
           {
             role: 'user',
@@ -88,7 +88,7 @@ describe('Issue #407: Token usage detail fields should not be undefined', () => 
   describe('streamText (doStream)', () => {
     it('should populate inputTokens.noCache and outputTokens.text with openai/gpt-4.1-nano', async () => {
       const response = streamText({
-        model: openrouter('openai/gpt-4.1-nano'),
+        model: osm('openai/gpt-4.1-nano'),
         messages: [
           {
             role: 'user',
@@ -115,7 +115,7 @@ describe('Issue #407: Token usage detail fields should not be undefined', () => 
 
     it('should populate reasoning tokens with anthropic/claude-3.7-sonnet:thinking', async () => {
       const response = streamText({
-        model: openrouter('anthropic/claude-3.7-sonnet:thinking'),
+        model: osm('anthropic/claude-3.7-sonnet:thinking'),
         messages: [
           {
             role: 'user',

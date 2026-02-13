@@ -8,7 +8,7 @@
  * - Feb 2, 2026: User reports that the SDK only supports effort values
  *   'high', 'medium', 'low' but the OpenRouter API docs show additional
  *   values: 'xhigh', 'minimal', 'none'.
- * - Links to https://openrouter.ai/docs/guides/best-practices/reasoning-tokens
+ * - Links to https://osm.ai/docs/guides/best-practices/reasoning-tokens
  */
 import { generateText } from 'ai';
 import { describe, expect, it, vi } from 'vitest';
@@ -19,13 +19,13 @@ vi.setConfig({
 });
 
 describe('Issue #391: reasoning effort xhigh, minimal, none values', () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
   it('should accept reasoning.effort xhigh without error', async () => {
-    const model = openrouter('openai/o3-mini', {
+    const model = osm('openai/o3-mini', {
       usage: {
         include: true,
       },
@@ -40,7 +40,7 @@ describe('Issue #391: reasoning effort xhigh, minimal, none values', () => {
         },
       ],
       providerOptions: {
-        openrouter: {
+        osm: {
           reasoning: {
             effort: 'xhigh',
           },
@@ -53,7 +53,7 @@ describe('Issue #391: reasoning effort xhigh, minimal, none values', () => {
   });
 
   it('should accept reasoning.effort minimal without error', async () => {
-    const model = openrouter('openai/o3-mini', {
+    const model = osm('openai/o3-mini', {
       usage: {
         include: true,
       },
@@ -68,7 +68,7 @@ describe('Issue #391: reasoning effort xhigh, minimal, none values', () => {
         },
       ],
       providerOptions: {
-        openrouter: {
+        osm: {
           reasoning: {
             effort: 'minimal',
           },
@@ -81,7 +81,7 @@ describe('Issue #391: reasoning effort xhigh, minimal, none values', () => {
   });
 
   it('should accept reasoning.effort none without error', async () => {
-    const model = openrouter('openai/o3-mini', {
+    const model = osm('openai/o3-mini', {
       usage: {
         include: true,
       },
@@ -96,7 +96,7 @@ describe('Issue #391: reasoning effort xhigh, minimal, none values', () => {
         },
       ],
       providerOptions: {
-        openrouter: {
+        osm: {
           reasoning: {
             effort: 'none',
           },

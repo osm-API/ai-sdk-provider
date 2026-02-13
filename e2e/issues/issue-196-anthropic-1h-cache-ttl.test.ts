@@ -17,12 +17,12 @@ vi.setConfig({
 });
 
 describe('Issue #196: Anthropic 1-hour cache TTL', () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
-  const model = openrouter('anthropic/claude-3.7-sonnet', {
+  const model = osm('anthropic/claude-3.7-sonnet', {
     usage: { include: true },
   });
 
@@ -43,7 +43,7 @@ describe('Issue #196: Anthropic 1-hour cache TTL', () => {
               type: 'text',
               text: 'c'.repeat(4200),
               providerOptions: {
-                openrouter: {
+                osm: {
                   cacheControl: { type: 'ephemeral', ttl: '1h' },
                 },
               },
@@ -60,13 +60,13 @@ describe('Issue #196: Anthropic 1-hour cache TTL', () => {
   it('should hit cache with ttl parameter', async () => {
     const response1 = await callWithIssue196Structure();
     const metadata1 = await response1.providerMetadata;
-    expect(metadata1?.openrouter).toBeDefined();
-    expect(metadata1?.openrouter?.usage).toBeDefined();
+    expect(metadata1?.osm).toBeDefined();
+    expect(metadata1?.osm?.usage).toBeDefined();
 
     const response2 = await callWithIssue196Structure();
     const metadata2 = await response2.providerMetadata;
 
-    const usage = metadata2?.openrouter?.usage as
+    const usage = metadata2?.osm?.usage as
       | { promptTokensDetails?: { cachedTokens?: number } }
       | undefined;
     const cachedTokens = Number(usage?.promptTokensDetails?.cachedTokens ?? 0);

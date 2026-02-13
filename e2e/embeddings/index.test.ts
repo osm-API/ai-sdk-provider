@@ -4,14 +4,14 @@ import { createOsm } from '@/src';
 
 vi.setConfig({ testTimeout: 60_000 });
 
-const openrouter = createOsm({
+const osm = createOsm({
   apiKey: process.env.OSM_API_KEY,
-  baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+  baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
 });
 
 describe('Embeddings', () => {
   it('generates a single embedding', async () => {
-    const model = openrouter.textEmbeddingModel(
+    const model = osm.textEmbeddingModel(
       'openai/text-embedding-3-small',
     );
 
@@ -25,7 +25,7 @@ describe('Embeddings', () => {
   });
 
   it('generates multiple embeddings', async () => {
-    const model = openrouter.textEmbeddingModel(
+    const model = osm.textEmbeddingModel(
       'openai/text-embedding-3-small',
     );
 
@@ -45,7 +45,7 @@ describe('Embeddings', () => {
   });
 
   it('reports usage', async () => {
-    const model = openrouter.textEmbeddingModel(
+    const model = osm.textEmbeddingModel(
       'openai/text-embedding-3-small',
     );
 
@@ -58,7 +58,7 @@ describe('Embeddings', () => {
   });
 
   it('accepts provider routing options', async () => {
-    const model = openrouter.textEmbeddingModel(
+    const model = osm.textEmbeddingModel(
       'openai/text-embedding-3-small',
       {
         user: 'e2e-test-user',
@@ -75,7 +75,7 @@ describe('Embeddings', () => {
   });
 
   it('works with deprecated embedding() method', async () => {
-    const model = openrouter.embedding('openai/text-embedding-3-small');
+    const model = osm.embedding('openai/text-embedding-3-small');
 
     const { embedding } = await embed({
       model,
@@ -86,7 +86,7 @@ describe('Embeddings', () => {
   });
 
   it('produces similar vectors for similar texts', async () => {
-    const model = openrouter.textEmbeddingModel(
+    const model = osm.textEmbeddingModel(
       'openai/text-embedding-3-small',
     );
 

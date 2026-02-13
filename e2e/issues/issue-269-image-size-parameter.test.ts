@@ -74,13 +74,13 @@ function extractBase64FromDataUrl(dataUrl: string): string {
 }
 
 describe('Issue #269: image_size parameter for google/gemini-3-pro-image-preview', () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
   });
 
   describe('Feature request: image_size should produce different resolutions', () => {
     it('should generate higher resolution image with 4k vs 1k image_size', async () => {
-      const model = openrouter('google/gemini-3-pro-image-preview', {
+      const model = osm('google/gemini-3-pro-image-preview', {
         extraBody: {
           modalities: ['image', 'text'],
           image_config: {
@@ -100,7 +100,7 @@ describe('Issue #269: image_size parameter for google/gemini-3-pro-image-preview
         ],
       });
 
-      const model4k = openrouter('google/gemini-3-pro-image-preview', {
+      const model4k = osm('google/gemini-3-pro-image-preview', {
         extraBody: {
           modalities: ['image', 'text'],
           image_config: {
@@ -144,7 +144,7 @@ describe('Issue #269: image_size parameter for google/gemini-3-pro-image-preview
 
   describe('Workaround: image_size can be passed via extraBody', () => {
     it('should pass image_size via extraBody.image_config matching issue pattern', async () => {
-      const model = openrouter('google/gemini-3-pro-image-preview', {
+      const model = osm('google/gemini-3-pro-image-preview', {
         extraBody: {
           modalities: ['image', 'text'],
           image_config: {
@@ -172,8 +172,8 @@ describe('Issue #269: image_size parameter for google/gemini-3-pro-image-preview
       expect(file?.base64).toBeTruthy();
     });
 
-    it('should pass image_size via providerOptions.openrouter', async () => {
-      const model = openrouter('google/gemini-3-pro-image-preview', {
+    it('should pass image_size via providerOptions.osm', async () => {
+      const model = osm('google/gemini-3-pro-image-preview', {
         extraBody: {
           modalities: ['image', 'text'],
         },
@@ -188,7 +188,7 @@ describe('Issue #269: image_size parameter for google/gemini-3-pro-image-preview
           },
         ],
         providerOptions: {
-          openrouter: {
+          osm: {
             image_config: {
               aspect_ratio: '1:1',
               image_size: '1k',

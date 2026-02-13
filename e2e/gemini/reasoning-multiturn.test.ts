@@ -34,12 +34,12 @@ const weatherTool = tool({
 
 describe('Gemini multi-turn tool calls with reasoning', () => {
   it('should preserve reasoning_details with streamText', async () => {
-    const openrouter = createOsm({
+    const osm = createOsm({
       apiKey: process.env.OSM_API_KEY,
-      baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+      baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
     });
 
-    const model = openrouter('google/gemini-3-flash-preview');
+    const model = osm('google/gemini-3-flash-preview');
 
     const firstResult = await streamText({
       model,
@@ -48,7 +48,7 @@ describe('Gemini multi-turn tool calls with reasoning', () => {
       prompt: 'What is the weather in San Francisco?',
       tools: { weatherTool },
       providerOptions: {
-        openrouter: {
+        osm: {
           includeReasoning: true,
         },
       },
@@ -86,7 +86,7 @@ describe('Gemini multi-turn tool calls with reasoning', () => {
 
     expect(toolCallProviderOptions).toBeDefined();
 
-    const reasoningDetails = toolCallProviderOptions?.openrouter
+    const reasoningDetails = toolCallProviderOptions?.osm
       ?.reasoning_details as
       | Array<{ type: string; data?: string; format?: string }>
       | undefined;
@@ -107,7 +107,7 @@ describe('Gemini multi-turn tool calls with reasoning', () => {
       messages: firstResponse.messages,
       tools: { weatherTool },
       providerOptions: {
-        openrouter: {
+        osm: {
           includeReasoning: true,
         },
       },
@@ -128,12 +128,12 @@ describe('Gemini multi-turn tool calls with reasoning', () => {
   });
 
   it('should preserve reasoning_details with generateText', async () => {
-    const openrouter = createOsm({
+    const osm = createOsm({
       apiKey: process.env.OSM_API_KEY,
-      baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+      baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
     });
 
-    const model = openrouter('google/gemini-3-flash-preview');
+    const model = osm('google/gemini-3-flash-preview');
 
     const firstResult = await generateText({
       model,
@@ -142,7 +142,7 @@ describe('Gemini multi-turn tool calls with reasoning', () => {
       prompt: 'What is the weather in San Francisco?',
       tools: { weatherTool },
       providerOptions: {
-        openrouter: {
+        osm: {
           includeReasoning: true,
         },
       },
@@ -180,7 +180,7 @@ describe('Gemini multi-turn tool calls with reasoning', () => {
 
     expect(toolCallProviderOptions).toBeDefined();
 
-    const reasoningDetails = toolCallProviderOptions?.openrouter
+    const reasoningDetails = toolCallProviderOptions?.osm
       ?.reasoning_details as
       | Array<{ type: string; data?: string; format?: string }>
       | undefined;
@@ -201,7 +201,7 @@ describe('Gemini multi-turn tool calls with reasoning', () => {
       messages: firstResponse.messages,
       tools: { weatherTool },
       providerOptions: {
-        openrouter: {
+        osm: {
           includeReasoning: true,
         },
       },

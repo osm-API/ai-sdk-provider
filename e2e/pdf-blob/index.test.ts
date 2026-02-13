@@ -10,12 +10,12 @@ vi.setConfig({
 });
 
 test('sending pdf base64 blob', async () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
-  const model = openrouter('anthropic/claude-sonnet-4', {
+  const model = osm('anthropic/claude-sonnet-4', {
     usage: {
       include: true,
     },
@@ -47,7 +47,7 @@ test('sending pdf base64 blob', async () => {
     model,
     messages: messageHistory,
     providerOptions: {
-      openrouter: {
+      osm: {
         reasoning: {
           max_tokens: 2048,
         },
@@ -66,12 +66,12 @@ test('sending pdf base64 blob', async () => {
 });
 
 test('sending large pdf base64 blob with FileParserPlugin', async () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
-  const model = openrouter('anthropic/claude-3.5-sonnet', {
+  const model = osm('anthropic/claude-3.5-sonnet', {
     plugins: [
       {
         id: 'file-parser',

@@ -25,9 +25,9 @@ vi.setConfig({
 });
 
 describe('Issue #199: PDF Processing Fails on GPT-4.1 and GPT-5 Models via OpenRouter', () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
   // Helper to fetch and encode PDF
@@ -39,7 +39,7 @@ describe('Issue #199: PDF Processing Fails on GPT-4.1 and GPT-5 Models via OpenR
   }
 
   it('should process PDF with openai/gpt-4.1', async () => {
-    const model = openrouter('openai/gpt-4.1');
+    const model = osm('openai/gpt-4.1');
     const pdfBase64 = await fetchPdfAsBase64();
 
     const messageHistory: ModelMessage[] = [
@@ -70,7 +70,7 @@ describe('Issue #199: PDF Processing Fails on GPT-4.1 and GPT-5 Models via OpenR
   });
 
   it('should process PDF with openai/gpt-5', async () => {
-    const model = openrouter('openai/gpt-5');
+    const model = osm('openai/gpt-5');
     const pdfBase64 = await fetchPdfAsBase64();
 
     const messageHistory: ModelMessage[] = [

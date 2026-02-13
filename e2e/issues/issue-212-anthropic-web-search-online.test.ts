@@ -19,13 +19,13 @@ vi.setConfig({
 });
 
 describe('Issue #212: Anthropic Web Search :online Error', () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
   // Use the exact model from issue #212
-  const model = openrouter('anthropic/claude-sonnet-4.5:online');
+  const model = osm('anthropic/claude-sonnet-4.5:online');
 
   it('should handle streaming with anthropic/claude-sonnet-4.5:online without errors', async () => {
     const { textStream } = streamText({

@@ -23,12 +23,12 @@ vi.setConfig({
 });
 
 describe('Issue #389: System message cache control with string content', () => {
-  const openrouter = createOsm({
+  const osm = createOsm({
     apiKey: process.env.OSM_API_KEY,
-    baseUrl: `${process.env.OPENROUTER_API_BASE}/api/v1`,
+    baseUrl: `${process.env.OSM_API_BASE}/api/v1`,
   });
 
-  const model = openrouter('anthropic/claude-sonnet-4');
+  const model = osm('anthropic/claude-sonnet-4');
 
   const longSystemPrompt = `You are a helpful assistant. Here is some context that should be cached:
 
@@ -92,7 +92,7 @@ Remember to be helpful and concise in your responses.`;
 
     const response = await makeRequest();
 
-    const openrouterMetadata = response.providerMetadata?.openrouter as {
+    const openrouterMetadata = response.providerMetadata?.osm as {
       usage?: {
         promptTokensDetails?: { cachedTokens?: number };
       };
