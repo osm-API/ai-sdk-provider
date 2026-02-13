@@ -1,6 +1,6 @@
-# Contributing to the OpenRouter AI SDK Provider
+# Contributing to the OSM AI SDK Provider
 
-Thank you for your interest in contributing to the OpenRouter provider for the Vercel AI SDK! This guide will help you get started as a contributor.
+Thank you for your interest in contributing to the OSM provider for the Vercel AI SDK! This guide will help you get started as a contributor.
 
 ## Getting Started
 
@@ -120,7 +120,7 @@ pnpm test:issues
  */
 import { ... } from 'ai';
 import { describe, expect, it, vi } from 'vitest';
-import { createOpenRouter } from '@/src';
+import { createOsm } from '@/src';
 
 describe('Issue #{number}: {brief description}', () => {
   // Test cases that verify the issue is resolved
@@ -141,7 +141,7 @@ describe('Issue #{number}: {brief description}', () => {
 
 ## Adding New Features
 
-When adding new features to the OpenRouter provider:
+When adding new features to the OSM provider:
 
 1. Start by understanding the existing architecture in the `src` directory
 2. Update the relevant type definitions in `types.ts` if needed
@@ -238,4 +238,4 @@ In case of emergency, a manual release can be triggered using the legacy `publis
 
 If you have questions about contributing, please open a GitHub issue in the repository.
 
-Thank you for contributing to the OpenRouter AI SDK Provider!
+Thank you for contributing to the OSM AI SDK Provider!

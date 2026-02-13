@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #392
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/392
+ * https://github.com/osm-API/ai-sdk-provider/issues/392
  *
  * Issue: "Add support for auto-router plugin"
  *

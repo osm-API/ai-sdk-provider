@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #190
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/190
+ * https://github.com/osm-API/ai-sdk-provider/issues/190
  *
  * Issue: streamObject with ai@4 + @openrouter/ai-sdk-provider@0.7.x threw
  * TypeError in flush: "Cannot read properties of undefined (reading 'sent')"

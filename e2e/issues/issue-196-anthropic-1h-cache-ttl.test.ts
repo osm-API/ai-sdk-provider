@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #196
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/196
+ * https://github.com/osm-API/ai-sdk-provider/issues/196
  *
  * Issue: "1 hour prompt caching problem" - User reported that when using
  * Anthropic's 1-hour prompt caching via OpenRouter with ttl: "1h", they

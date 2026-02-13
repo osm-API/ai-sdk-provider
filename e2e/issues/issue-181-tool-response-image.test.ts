@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #181
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/181
+ * https://github.com/osm-API/ai-sdk-provider/issues/181
  *
  * Issue: "tool response for image not working"
  *

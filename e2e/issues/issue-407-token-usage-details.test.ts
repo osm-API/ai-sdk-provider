@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #407
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/407
+ * https://github.com/osm-API/ai-sdk-provider/issues/407
  *
  * Issue: "Doesn't provide proper token usage data leading to 'undefined' sometime"
  *

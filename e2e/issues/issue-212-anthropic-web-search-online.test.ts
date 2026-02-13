@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #212
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/212
+ * https://github.com/osm-API/ai-sdk-provider/issues/212
  *
  * Issue: "Anthropic Model Error with Web Search :online Applied"
  *

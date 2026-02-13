@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #194
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/194
+ * https://github.com/osm-API/ai-sdk-provider/issues/194
  *
  * Reported error: "AI_APICallError: Invalid JSON response"
  * Model: x-ai/grok-4-fast

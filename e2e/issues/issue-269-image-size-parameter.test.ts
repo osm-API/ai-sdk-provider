@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #269
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/269
+ * https://github.com/osm-API/ai-sdk-provider/issues/269
  *
  * Issue: "Add support for image_size parameter for google/gemini-3-pro-image-preview"
  *

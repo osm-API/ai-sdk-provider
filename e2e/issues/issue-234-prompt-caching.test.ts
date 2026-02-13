@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #234
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/234
+ * https://github.com/osm-API/ai-sdk-provider/issues/234
  *
  * Issue: "Delayed caching with GPT 4.1, none with Kimi K2 Thinking"
  *

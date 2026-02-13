@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #199
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/199
+ * https://github.com/osm-API/ai-sdk-provider/issues/199
  *
  * Issue: "PDF Processing Fails on GPT-4.1 and GPT-5 Models via OpenRouter"
  *

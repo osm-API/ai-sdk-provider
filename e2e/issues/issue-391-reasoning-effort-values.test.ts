@@ -1,6 +1,6 @@
 /**
  * Regression test for GitHub issue #391
- * https://github.com/OpenRouterTeam/ai-sdk-provider/issues/391
+ * https://github.com/osm-API/ai-sdk-provider/issues/391
  *
  * Issue: "Add support for effort: none | minimal | xhigh"
  *
