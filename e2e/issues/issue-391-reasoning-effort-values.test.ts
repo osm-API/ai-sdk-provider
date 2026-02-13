@@ -6,7 +6,7 @@
  *
  * Issue thread timeline:
  * - Feb 2, 2026: User reports that the SDK only supports effort values
- *   'high', 'medium', 'low' but the OpenRouter API docs show additional
+ *   'high', 'medium', 'low' but the OSM API docs show additional
  *   values: 'xhigh', 'minimal', 'none'.
  * - Links to https://osm.ai/docs/guides/best-practices/reasoning-tokens
  */
