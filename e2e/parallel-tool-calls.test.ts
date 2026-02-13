@@ -117,8 +117,9 @@ function verifyReasoningDetailsDeduplication(
     const toolCallProviderOptions = toolCallContents[i]?.providerOptions as
       | Record<string, Record<string, unknown>>
       | undefined;
-    const reasoningDetails = toolCallProviderOptions?.osm
-      ?.reasoning_details as Array<unknown> | undefined;
+    const reasoningDetails = toolCallProviderOptions?.osm?.reasoning_details as
+      | Array<unknown>
+      | undefined;
 
     expect(
       reasoningDetails === undefined || reasoningDetails.length === 0,

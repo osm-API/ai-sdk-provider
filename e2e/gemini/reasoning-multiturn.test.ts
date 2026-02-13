@@ -86,8 +86,7 @@ describe('Gemini multi-turn tool calls with reasoning', () => {
 
     expect(toolCallProviderOptions).toBeDefined();
 
-    const reasoningDetails = toolCallProviderOptions?.osm
-      ?.reasoning_details as
+    const reasoningDetails = toolCallProviderOptions?.osm?.reasoning_details as
       | Array<{ type: string; data?: string; format?: string }>
       | undefined;
 
@@ -180,8 +179,7 @@ describe('Gemini multi-turn tool calls with reasoning', () => {
 
     expect(toolCallProviderOptions).toBeDefined();
 
-    const reasoningDetails = toolCallProviderOptions?.osm
-      ?.reasoning_details as
+    const reasoningDetails = toolCallProviderOptions?.osm?.reasoning_details as
       | Array<{ type: string; data?: string; format?: string }>
       | undefined;
 

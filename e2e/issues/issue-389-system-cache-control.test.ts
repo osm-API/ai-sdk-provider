@@ -98,8 +98,7 @@ Remember to be helpful and concise in your responses.`;
       };
     };
 
-    const cachedTokens =
-      osmMetadata?.usage?.promptTokensDetails?.cachedTokens;
+    const cachedTokens = osmMetadata?.usage?.promptTokensDetails?.cachedTokens;
 
     expect(cachedTokens).toBeDefined();
     expect(cachedTokens).toBeGreaterThan(0);
